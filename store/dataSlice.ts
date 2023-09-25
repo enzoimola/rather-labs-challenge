@@ -1,14 +1,17 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { HYDRATE } from 'next-redux-wrapper';
+import { nanoid } from 'nanoid';
 import { AppState } from './store';
 import { IMedia } from '@/models/interfaces/media.interface';
 
 export interface DataState {
-  media: Array<IMedia>
+  media: Array<IMedia>;
+  mediaSelected: number;
 }
 
 const initialState: DataState = {
   media: [],
+  mediaSelected: null,
 };
 
 export const dataSlice = createSlice({
@@ -18,6 +21,11 @@ export const dataSlice = createSlice({
     setMedia(state, { payload }: { payload: IMedia }) {
       // eslint-disable-next-line no-param-reassign
       state.media = payload;
+    },
+    setMediaSelected(state, { payload }: { payload: number }) {
+      console.log('From store, ', payload);
+      // eslint-disable-next-line no-param-reassign
+      state.mediaSelected = payload;
     },
   },
 
@@ -31,6 +39,7 @@ export const dataSlice = createSlice({
 });
 
 export const { setMedia } = dataSlice.actions;
+export const { setMediaSelected } = dataSlice.actions;
 
 export const selectMedia = (state: AppState) => state.data.media;
 

@@ -10,10 +10,14 @@
   margin: var(--mantine-spacing-lg);
 }
 
-.title {
+.titleWrapper {
   font-family: Greycliff CF, var(--mantine-font-family);
   line-height: 1;
+  display: inline-grid;
+  justify-content: center;
+  //text-align: center;
 }
+
 
 @media screen and (max-device-width: 500px) {
   .sectionCard .imageCard {

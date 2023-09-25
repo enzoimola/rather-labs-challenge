@@ -12,6 +12,7 @@ export const MediaGrid: React.FC<MediaGridType> = ({ media }) => (
                 <Grid.Col key={m.id} span={4}>
                     <MediaCard
                       title={m.title}
+                      id={m.id}
                       image={m.poster_image}
                       releaseDate={m.release_date}
                     />

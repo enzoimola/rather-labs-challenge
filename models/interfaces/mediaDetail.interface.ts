@@ -6,6 +6,7 @@ export interface IMediaDetail {
     overview: string;
     genres: [IGenres];
     productionCompanies : [IProductionCompanies]
+    tagline: string,
 }
 
 interface IGenres {

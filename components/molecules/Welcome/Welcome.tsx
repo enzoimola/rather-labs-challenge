@@ -8,11 +8,7 @@ export function Welcome() {
           header={{ height: 60 }}
           padding="md"
         >
-            <AppShell.Header>
-                <Header />
-            </AppShell.Header>
-
-            <AppShell.Main>
+            <AppShell.Main pt={10}>
                 <MainLayout />
             </AppShell.Main>
         </AppShell>

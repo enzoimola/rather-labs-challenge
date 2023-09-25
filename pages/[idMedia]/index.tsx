@@ -1,7 +1,6 @@
 import MediaDetail from '@/components/molecules/MediaDetail';
 
 const Detail = () => (
-        <MediaDetail />
-    );
-
+    <MediaDetail />
+);
 export default Detail;

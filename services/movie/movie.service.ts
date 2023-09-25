@@ -17,6 +17,7 @@ const mediaDetailDataParser = (m: any): IMediaDetail => ({
         overview: m.overview,
         genres: m.genres,
         productionCompanies: m.production_companies,
+        tagline: m.tagline,
     });
 
 export const fetchMedia = async (search?: string): Promise<Array<IMedia>> => {

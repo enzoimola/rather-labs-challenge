@@ -1,8 +1,11 @@
 import { IconHeart } from '@tabler/icons-react';
 import { Card, Image, Text, Group, Badge, Button, ActionIcon } from '@mantine/core';
-import React from 'react';
+import React, { useState } from 'react';
 import moment from 'moment';
+import { useRouter } from 'next/router';
+import { useDispatch } from 'react-redux';
 import classes from './MediaCard.module.scss';
+import { setMediaSelected } from '@/store/dataSlice';
 
 const mockdata = {
     image:
@@ -21,21 +24,37 @@ const mockdata = {
 };
 
 type MediaCardType = {
+    id: number
     title: string,
     releaseDate: string,
     image: string
     // image?: string
     // show: boolean
 };
-export const MediaCard: React.FC<MediaCardType> = ({ title, releaseDate, image }) => {
+export const MediaCard: React.FC<MediaCardType> = ({ id, title, releaseDate, image }) => {
     const { badges } = mockdata;
+    const [loadingBtn, setLoadingBtn] = useState(false);
+    const router = useRouter();
     const imageURL = `http://image.tmdb.org/t/p/w500/${image}`;
+    // const data = useSelector(data);
+    const dispatch = useDispatch();
+    const userDispatch = () => {
+        dispatch(setMediaSelected(id));
+    };
 
     const features = badges.map((badge) => (
         <Badge variant="light" key={badge.label} leftSection={badge.emoji}>
             {badge.label}
         </Badge>
     ));
+
+    const onShowDetailsHandler = (e) => {
+        e.preventDefault();
+        setLoadingBtn(true);
+        userDispatch();
+
+        router.push({ pathname: '/[id]', query: { id } });
+    };
 
     return (
         <Card withBorder radius="md" p="md" className={classes.card}>
@@ -64,7 +83,7 @@ export const MediaCard: React.FC<MediaCardType> = ({ title, releaseDate, image }
             </Card.Section>
 
             <Group mt="xs">
-                <Button radius="md" style={{ flex: 1 }}>
+                <Button radius="md" style={{ flex: 1 }} onClick={onShowDetailsHandler} loading={loadingBtn}>
                     Show details
                 </Button>
                 <ActionIcon variant="default" radius="md" size={36}>
