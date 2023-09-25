@@ -1,7 +1,13 @@
+import { Flex, Title } from '@mantine/core';
+import { Media } from '@/components/organisms/Media/Media';
+
 export default function Favorites() {
     return (
         <>
-            <h1>Favorites page</h1>
+            <Flex direction="column" gap="sm" justify="center" maw={960} mx="auto">
+                <Title>Favourites media</Title>
+                <Media />
+            </Flex>
         </>
     );
 }

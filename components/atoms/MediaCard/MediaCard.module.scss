@@ -2,11 +2,23 @@
   background-color: var(--mantine-color-white);
 }
 
+.title {
+  max-width: 156px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .section {
   border-bottom: 1px solid var(--mantine-color-gray-3);
   padding-left: var(--mantine-spacing-md);
-  padding-right: var(--mantine-spacing-md);
   padding-bottom: var(--mantine-spacing-md);
+  width: 100%;
+}
+
+.sectionGroup {
+  display: flex;
+  justify-content: space-between;
 }
 
 .like {

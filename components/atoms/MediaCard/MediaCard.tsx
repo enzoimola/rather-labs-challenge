@@ -1,6 +1,7 @@
 import { IconHeart } from '@tabler/icons-react';
 import { Card, Image, Text, Group, Badge, Button, ActionIcon } from '@mantine/core';
 import React from 'react';
+import moment from 'moment';
 import classes from './MediaCard.module.scss';
 
 const mockdata = {
@@ -21,11 +22,15 @@ const mockdata = {
 
 type MediaCardType = {
     title: string,
+    releaseDate: string,
+    image: string
     // image?: string
     // show: boolean
 };
-export const MediaCard: React.FC<MediaCardType> = ({ title }) => {
-    const { image, description, country, badges } = mockdata;
+export const MediaCard: React.FC<MediaCardType> = ({ title, releaseDate, image }) => {
+    const { badges } = mockdata;
+    const imageURL = `http://image.tmdb.org/t/p/w500/${image}`;
+
     const features = badges.map((badge) => (
         <Badge variant="light" key={badge.label} leftSection={badge.emoji}>
             {badge.label}
@@ -35,21 +40,18 @@ export const MediaCard: React.FC<MediaCardType> = ({ title }) => {
     return (
         <Card withBorder radius="md" p="md" className={classes.card}>
             <Card.Section>
-                <Image src={image} alt={title} height={180} />
+                <Image src={imageURL} alt={title} height={180} />
             </Card.Section>
 
             <Card.Section className={classes.section} mt="md">
-                <Group justify="apart">
-                    <Text fz="lg" fw={500}>
+                <Group justify="apart" className={classes.sectionGroup}>
+                    <Text fz="lg" fw={500} className={classes.title}>
                         {title}
                     </Text>
-                    <Badge size="sm" variant="light">
-                        {country}
+                    <Badge size="xs" variant="light">
+                        {moment(releaseDate).format('MMM Do YY')}
                     </Badge>
                 </Group>
-                <Text fz="sm" mt="xs">
-                    {description}
-                </Text>
             </Card.Section>
 
             <Card.Section className={classes.section}>

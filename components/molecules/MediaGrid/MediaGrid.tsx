@@ -9,7 +9,13 @@ type MediaGridType = {
 export const MediaGrid: React.FC<MediaGridType> = ({ media }) => (
         <Grid>
             {media.map((m: IMedia) => (
-                <Grid.Col key={m.id} span={4}><MediaCard title={m.name} /></Grid.Col>
+                <Grid.Col key={m.id} span={4}>
+                    <MediaCard
+                      title={m.title}
+                      image={m.poster_image}
+                      releaseDate={m.release_date}
+                    />
+                </Grid.Col>
             ))}
         </Grid>
     );

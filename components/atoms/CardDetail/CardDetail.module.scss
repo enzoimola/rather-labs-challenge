@@ -1,0 +1,22 @@
+.card {
+  background-color: var(--mantine-color-body);
+}
+
+.sectionCard .imageCard {
+  height: 300px;
+}
+
+.tableWrapper {
+  margin: var(--mantine-spacing-lg);
+}
+
+.title {
+  font-family: Greycliff CF, var(--mantine-font-family);
+  line-height: 1;
+}
+
+@media screen and (max-device-width: 500px) {
+  .sectionCard .imageCard {
+    height: 200px;
+  }
+}

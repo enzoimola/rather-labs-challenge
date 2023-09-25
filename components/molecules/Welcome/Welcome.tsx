@@ -1,5 +1,4 @@
-import { AppShell, useMantineColorScheme } from '@mantine/core';
-import { useEffect } from 'react';
+import { AppShell } from '@mantine/core';
 import { Header } from '@/components/molecules/Header/Header';
 import { MainLayout } from '@/layouts/MainLayout';
 
