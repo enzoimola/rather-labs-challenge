@@ -20,8 +20,6 @@ const MediaDetail = () => {
     };
 
     useEffect(() => {
-        console.log('mediaData');
-        console.log(mediaData);
         // eslint-disable-next-line no-void
         void getMediaDetail(565770);
     }, []);

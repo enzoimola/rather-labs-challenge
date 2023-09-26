@@ -13,15 +13,22 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 import classes from './Header.module.scss';
+import { useAuth } from '@/context/auth';
 
 export const Header = () => {
     const [drawerOpened, { toggle: toggleDrawer, close: closeDrawer }] = useDisclosure(false);
     const router = useRouter();
     const [loadingLogoutBtn, setLoadingLogoutBtn] = useState(false);
+    const { logout } = useAuth();
 
-    const onLogoutHandler = () => {
+    const onLogoutHandler = async () => {
         setLoadingLogoutBtn(true);
-        router.replace('/auth');
+        try {
+            await logout();
+            router.replace('/auth/login');
+        } catch (e) {
+            console.log(e.message);
+        }
     };
 
     return (

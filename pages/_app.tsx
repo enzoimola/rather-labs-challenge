@@ -5,10 +5,12 @@ import { MantineProvider } from '@mantine/core';
 import { useRouter } from 'next/router';
 import { wrapper } from '@/store/store';
 import { Header } from '@/components/molecules/Header/Header';
+import { AuthProvider } from '@/context/auth';
 
-function App({ Component, pageProps }: AppProps) {
+const App = ({ Component, pageProps }: AppProps) => {
   const router = useRouter();
-  const showHeader = router.pathname !== '/auth';
+
+  const showHeader = !router.pathname.includes('auth');
 
   return (
     <MantineProvider theme="light">
@@ -20,10 +22,13 @@ function App({ Component, pageProps }: AppProps) {
         />
         <link rel="shortcut icon" href="/favicon.svg" />
       </Head>
+      <AuthProvider>
         {showHeader && <Header />}
         <Component {...pageProps} />
+      </AuthProvider>
+
     </MantineProvider>
   );
-}
+};
 
 export default wrapper.withRedux(App);

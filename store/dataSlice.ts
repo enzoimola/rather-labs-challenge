@@ -23,7 +23,6 @@ export const dataSlice = createSlice({
       state.media = payload;
     },
     setMediaSelected(state, { payload }: { payload: number }) {
-      console.log('From store, ', payload);
       // eslint-disable-next-line no-param-reassign
       state.mediaSelected = payload;
     },
