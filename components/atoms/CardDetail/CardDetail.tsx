@@ -1,20 +1,16 @@
-import { Card, Image, Text, Group, Badge } from '@mantine/core';
+import { Card, Image, Text, Group, Badge, Rating, Slider, Chip } from '@mantine/core';
 import React from 'react';
 import moment from 'moment/moment';
+import { IconStar } from '@tabler/icons-react';
 import classes from './CardDetail.module.scss';
-import { TableCardDetail } from '@/components/atoms/TableCardDetail/TableCardDetail';
+import { IMediaDetail } from '@/models/interfaces/mediaDetail.interface';
 
-export const CardDetail: React.FC<MediaCardType> = (
-    { title, releaseDate, image, summary, genres, productionCompanies, tagline }) => {
+export const CardDetail: React.FC<IMediaDetail> = (
+    { title, releaseDate, image, summary, voteAverage, tagline }) => {
     const imageURL = `http://image.tmdb.org/t/p/w500/${image}`;
 
-    const badgeColors: Array<string> = ['yellow', 'teal', 'cyan', 'violet', 'orange'];
-
-    const genresBadges = genres?.map((badge, index) => (
-        <Badge variant="light" color={badgeColors[index % badgeColors.length]} key={badge.id}>
-            {badge.name}
-        </Badge>
-    ));
+    const icon = <IconStar style={{ width: 20, height: 20 }} />;
+    const voteAvg = voteAverage.toFixed(1);
 
     return (
         <>
@@ -36,12 +32,22 @@ export const CardDetail: React.FC<MediaCardType> = (
                     />
                 </Card.Section>
 
-                <Group justify="end" mt="xl">
-                    {/*<Text fz="md" fw={700} className={classes.title}>*/}
-                    {/*    {title}*/}
-                    {/*</Text>*/}
+                <Group justify="space-between" mt="md">
+                    <Group>
+                        <Badge
+                          color="yellow"
+                          variant="filled"
+                          size="lg"
+                          leftSection={icon}
+                        >
+                            <Text fz="md" fw={700} className={classes.ratingIcon}>
+                                {voteAvg}
+                            </Text>
+                        </Badge>
+                    </Group>
+
                     <Group gap={5}>
-                        <Badge size="md" variant="transparent">
+                        <Badge size="lg" variant="transparent">
                             {moment(releaseDate).format('MMMM Do YYYY, h:mm a')}
                         </Badge>
                     </Group>
@@ -49,14 +55,15 @@ export const CardDetail: React.FC<MediaCardType> = (
                 <Text mt="sm" mb="xl" c="dimmed" fz="sm">
                     {summary}
                 </Text>
-                <Group gap={7} mt={5} justify="start">
-                    {genresBadges}
-                </Group>
 
-                <Text mt="xl" mb="md" ta="center" c="dimmed" fz="md" fw={700}>
-                    Poduction companies
-                </Text>
-                <TableCardDetail data={productionCompanies} p={40} />
+                {/*<Group gap={7} mt={5} justify="start">*/}
+                {/*    {genresBadges}*/}
+                {/*</Group>*/}
+
+                {/*<Text mt="xl" mb="md" ta="center" c="dimmed" fz="md" fw={700}>*/}
+                {/*    Poduction companies*/}
+                {/*</Text>*/}
+                {/*<TableCardDetail data={productionCompanies} p={40} />*/}
             </Card>
         </>
     );

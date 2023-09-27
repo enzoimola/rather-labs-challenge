@@ -15,7 +15,11 @@
   line-height: 1;
   display: inline-grid;
   justify-content: center;
-  //text-align: center;
+}
+
+.ratingIcon {
+  align-items: center;
+  display: flex;
 }
 
 

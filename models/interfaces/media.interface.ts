@@ -1,13 +1,10 @@
 export interface IMedia {
-    id: number
-    title: string
-    poster_image: string
-    release_date: string
-    overview: string
-    rating?: [IRating]
-
-}
-
-interface IRating {
+    id: number;
+    name: string;
+    posterPath: string;
+    releaseDate: string;
+    voteAverage: number;
+    overview: string;
+    tagline: string;
 
 }
