@@ -1,6 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { HYDRATE } from 'next-redux-wrapper';
-import { nanoid } from 'nanoid';
 import { AppState } from './store';
 import { IMedia } from '@/models/interfaces/media.interface';
 

@@ -5,6 +5,7 @@ import MediaDetail from '@/components/molecules/MediaDetail';
 
 import { createApolloClient } from '@/apollo-client';
 import { IMediaDetail } from '@/models/interfaces/mediaDetail.interface';
+import { FETCH_DETAIL_MEDIA } from '@/graphql/queries';
 
 export const getStaticPaths: GetStaticPaths<DetailType> = async () => ({
     paths: [], //indicates that no page needs be created at build time
@@ -14,19 +15,7 @@ export const getStaticPaths: GetStaticPaths<DetailType> = async () => ({
 export async function getStaticProps({ params }) {
     const client = createApolloClient();
     const { data } = await client.query({
-        query: gql`
-            query {
-              detailMedia (id:${params.idMedia},isMovie: true ) {
-                id,
-                name,
-                posterPath
-                releaseDate,
-                voteAverage,
-                overview,
-                tagline
-              }
-            }
-    `,
+        query: FETCH_DETAIL_MEDIA(params.idMedia),
     });
 
     return {
@@ -37,8 +26,5 @@ export async function getStaticProps({ params }) {
 }
 
 export type DetailType = { detailMedia: IMediaDetail };
-const Detail: React.FC<DetailType> = ({ detailMedia }) => {
-    console.log(detailMedia);
-    return <MediaDetail detailMedia={detailMedia} />;
-};
+const Detail: React.FC<DetailType> = ({ detailMedia }) => <MediaDetail detailMedia={detailMedia} />;
 export default Detail;

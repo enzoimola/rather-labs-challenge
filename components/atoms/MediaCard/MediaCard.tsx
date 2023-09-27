@@ -3,52 +3,35 @@ import { Card, Image, Text, Group, Badge, Button, ActionIcon } from '@mantine/co
 import React, { useState } from 'react';
 import moment from 'moment';
 import { useRouter } from 'next/router';
-import { useDispatch } from 'react-redux';
 import classes from './MediaCard.module.scss';
-import { setMediaSelected } from '@/store/dataSlice';
+import { IMedia } from '@/models/interfaces/media.interface';
 
-type MediaCardType = {
-    id: number
-    title: string,
-    releaseDate: string,
-    image: string
-    // image?: string
-    // show: boolean
-};
-export const MediaCard: React.FC<MediaCardType> = (
-    { id, title, releaseDate, image }) => {
+export const MediaCard: React.FC<IMedia> = (
+    { id, name, releaseDate, posterPath, voteAverage }) => {
     const [loadingBtn, setLoadingBtn] = useState(false);
     const router = useRouter();
-    const imageURL = `http://image.tmdb.org/t/p/w500/${image}`;
-    // const data = useSelector(data);
-    const dispatch = useDispatch();
-    const userDispatch = () => {
-        dispatch(setMediaSelected(id));
-    };
-
-    const voteAverage = 7.900;
+    const imageURL = posterPath ? `http://image.tmdb.org/t/p/w500${posterPath}` : '/no-media-image.jpg';
 
     const onShowDetailsHandler = (e) => {
         e.preventDefault();
         setLoadingBtn(true);
-        userDispatch();
 
         router.push({ pathname: '/[id]', query: { id } });
     };
 
     const icon = <IconStar style={{ width: 20, height: 20 }} />;
-    const voteAvg = voteAverage.toFixed(1);
+    const voteAvg = !voteAverage ? 0 : voteAverage.toFixed(1);
 
     return (
         <Card withBorder radius="md" p="md" className={classes.card}>
             <Card.Section>
-                <Image src={imageURL} alt={title} height={180} />
+                <Image src={imageURL} alt={name} height={180} />
             </Card.Section>
 
             <Card.Section className={classes.section} mt="md">
                 <Group justify="center" className={classes.sectionGroup}>
                     <Text fz="lg" justify="center" fw={500} className={classes.title}>
-                        {title}
+                        {name}
                     </Text>
                 </Group>
             </Card.Section>

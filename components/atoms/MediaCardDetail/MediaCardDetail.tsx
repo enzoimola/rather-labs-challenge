@@ -2,12 +2,12 @@ import { Card, Image, Text, Group, Badge, Rating, Slider, Chip } from '@mantine/
 import React from 'react';
 import moment from 'moment/moment';
 import { IconStar } from '@tabler/icons-react';
-import classes from './CardDetail.module.scss';
+import classes from './MediaCardDetail.module.scss';
 import { IMediaDetail } from '@/models/interfaces/mediaDetail.interface';
 
-export const CardDetail: React.FC<IMediaDetail> = (
-    { title, releaseDate, image, summary, voteAverage, tagline }) => {
-    const imageURL = `http://image.tmdb.org/t/p/w500/${image}`;
+export const MediaCardDetail: React.FC<IMediaDetail> = (
+    { name, releaseDate, posterPath, overview, voteAverage, tagline }) => {
+    const imageURL = `http://image.tmdb.org/t/p/w500/${posterPath}`;
 
     const icon = <IconStar style={{ width: 20, height: 20 }} />;
     const voteAvg = voteAverage.toFixed(1);
@@ -16,7 +16,7 @@ export const CardDetail: React.FC<IMediaDetail> = (
         <>
             <Group className={classes.titleWrapper}>
                 <Text fz="xl" fw={700} justify="center" align="center">
-                    {title}
+                    {name}
                 </Text>
                 <Text fz="md" fw={500} justify="center" align="center">
                     {tagline}
@@ -26,7 +26,7 @@ export const CardDetail: React.FC<IMediaDetail> = (
                 <Card.Section className={classes.sectionCard}>
                     <Image
                       src={imageURL}
-                      alt={title}
+                      alt={name}
                       className={classes.imageCard}
                       height={100}
                     />
@@ -53,7 +53,7 @@ export const CardDetail: React.FC<IMediaDetail> = (
                     </Group>
                 </Group>
                 <Text mt="sm" mb="xl" c="dimmed" fz="sm">
-                    {summary}
+                    {overview}
                 </Text>
 
                 {/*<Group gap={7} mt={5} justify="start">*/}

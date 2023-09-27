@@ -1,30 +1,31 @@
 import React, { useEffect, useState } from 'react';
 import { Container, Skeleton } from '@mantine/core';
+import { useSelector } from 'react-redux';
 import { MediaSearch } from '@/components/atoms/MediaSearch/MediaSearch';
 import { MediaGrid } from '@/components/molecules/MediaGrid/MediaGrid';
 import { IMedia } from '@/models/interfaces/media.interface';
-import { fetchMedia } from '@/services/movie/movie.service';
 
 export const Media: React.FC = () => {
-    // const dispatch = useDispatch();
     const [media, setMedia] = useState<Array<IMedia>>([]);
     const [loadingPage, setLoadingPage] = useState<boolean>(true);
+    const mediaFetched = useSelector((data) => data);
 
-    const getMovies = async (search?: string) => {
-        const response: Array<IMedia> = await fetchMedia(search);
-        setMedia(response);
-        // dispatch(setMedia(response));
+    const getMovies = (search?: string) => {
+        if (!search) {
+            setMedia(mediaFetched.data.media);
+            return;
+        }
+        const result = media.filter((md) => md.name.toLowerCase().includes(search.toLowerCase()));
+        setMedia(result);
     };
 
     const onChange = (search: string) => {
-        // eslint-disable-next-line no-void
-        void getMovies(search);
+        getMovies(search);
     };
 
     useEffect(() => {
+        setMedia(mediaFetched.data.media);
         setLoadingPage(false);
-        // eslint-disable-next-line no-void
-        void getMovies();
     }, []);
 
     if (loadingPage) {
