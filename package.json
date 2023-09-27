@@ -19,6 +19,8 @@
     "storybook:build": "storybook build"
   },
   "dependencies": {
+    "@apollo/client": "^3.8.4",
+    "@apollo/experimental-nextjs-app-support": "^0.4.3",
     "@mantine/core": "7.0.0",
     "@mantine/hooks": "7.0.0",
     "@next/bundle-analyzer": "^13.4.4",
@@ -26,6 +28,7 @@
     "@tabler/icons-react": "^2.20.0",
     "clsx": "^2.0.0",
     "firebase": "^10.4.0",
+    "graphql": "^16.8.1",
     "moment": "^2.29.4",
     "next": "13.4.4",
     "next-redux-wrapper": "^8.1.0",
