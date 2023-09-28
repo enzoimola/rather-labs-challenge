@@ -43,6 +43,7 @@ export const MediaCard: React.FC<IMedia> = (
         const body: IFavMedia = {
             id,
             markAsFav: !setUnfav,
+            isMovie,
         };
 
         const response = await saveFavorite(body);

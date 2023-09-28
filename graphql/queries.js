@@ -34,3 +34,12 @@ export const FETCH_FAVORITES_MEDIA = gql`
       }
     }
 `;
+
+export const FETCH_URL_MEDIA = gql`
+    query {
+      getURLMedia {
+        id
+        homepage
+      }
+    }
+`;
