@@ -28,11 +28,10 @@ const App = ({ Component, pageProps }: AppProps) => {
               </Head>
 
               <AuthProvider>
-                  {showHeader && <Header />}
-              <ApolloProvider client={createApolloClient}>
-                  <Component {...pageProps} />
-              </ApolloProvider>
-
+                  <ApolloProvider client={createApolloClient}>
+                        {showHeader && <Header />}
+                      <Component {...pageProps} />
+                  </ApolloProvider>
               </AuthProvider>
 
           </MantineProvider>

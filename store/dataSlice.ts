@@ -2,15 +2,18 @@ import { createSlice } from '@reduxjs/toolkit';
 import { HYDRATE } from 'next-redux-wrapper';
 import { AppState } from './store';
 import { IMedia } from '@/models/interfaces/media.interface';
+import { IFavMedia } from '@/models/interfaces/favMedia.interface';
 
 export interface DataState {
   media: Array<IMedia>;
   mediaSelected: number;
+  favorites: Array<IFavMedia>
 }
 
 const initialState: DataState = {
   media: [],
   mediaSelected: null,
+  favorites: [],
 };
 
 export const dataSlice = createSlice({
@@ -25,6 +28,10 @@ export const dataSlice = createSlice({
       // eslint-disable-next-line no-param-reassign
       state.mediaSelected = payload;
     },
+    setFavoritesMedia(state, { payload }: { payload: IMedia }) {
+      // eslint-disable-next-line no-param-reassign
+      state.favorites = payload;
+    },
   },
 
   // Special reducer for hydrating the state. Special case for next-redux-wrapper
@@ -38,6 +45,7 @@ export const dataSlice = createSlice({
 
 export const { setMedia } = dataSlice.actions;
 export const { setMediaSelected } = dataSlice.actions;
+export const { setFavoritesMedia } = dataSlice.actions;
 
 export const selectMedia = (state: AppState) => state.data.media;
 

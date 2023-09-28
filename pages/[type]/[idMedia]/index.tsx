@@ -1,4 +1,3 @@
-import { gql } from '@apollo/client';
 import React from 'react';
 import { GetStaticPaths } from 'next';
 import MediaDetail from '@/components/molecules/MediaDetail';
@@ -14,8 +13,9 @@ export const getStaticPaths: GetStaticPaths<DetailType> = async () => ({
 
 export async function getStaticProps({ params }) {
     const client = createApolloClient();
+    const movieParam = params.type === 'movie';
     const { data } = await client.query({
-        query: FETCH_DETAIL_MEDIA(params.idMedia),
+        query: FETCH_DETAIL_MEDIA(params.idMedia, movieParam),
     });
 
     return {

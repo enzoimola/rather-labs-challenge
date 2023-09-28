@@ -6,12 +6,13 @@ import {
     Burger,
     Drawer,
     ScrollArea,
-    rem,
+    rem, Indicator,
 } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
+import { useSelector } from 'react-redux';
 import classes from './Header.module.scss';
 import { useAuth } from '@/context/auth';
 
@@ -20,6 +21,7 @@ export const Header = () => {
     const router = useRouter();
     const [loadingLogoutBtn, setLoadingLogoutBtn] = useState(false);
     const { logout } = useAuth();
+    const mediaFetched = useSelector((data) => data);
 
     const onLogoutHandler = async () => {
         setLoadingLogoutBtn(true);
@@ -38,7 +40,11 @@ export const Header = () => {
 
                     <Group h="100%" gap={0} visibleFrom="sm">
                        <Link href={{ pathname: '/' }} className={classes.link}>Home</Link>
-                       <Link href={{ pathname: '/favorites' }} className={classes.link}>Favourites</Link>
+                        {mediaFetched.data.favorites.length > 0 && <Link href={{ pathname: '/favorites' }} className={classes.link}>
+                            <Indicator color="red" size={15} label={mediaFetched.data.favorites.length}>
+                                Favourites
+                            </Indicator>
+                                                                   </Link>}
                     </Group>
 
                     <Group visibleFrom="sm">
@@ -66,8 +72,11 @@ export const Header = () => {
                     <Divider my="sm" />
                     <Link href={{ pathname: '/' }} className={classes.link}>Home</Link>
                     <Divider my="sm" />
-                    <Link href={{ pathname: '/favorites' }} className={classes.link}>Favourites</Link>
-
+                    {mediaFetched.data.favorites.length > 0 && <Link href={{ pathname: '/favorites' }} className={classes.link}>
+                        <Indicator color="red" size={15} label={mediaFetched.data.favorites.length}>
+                            Favourites
+                        </Indicator>
+                                                               </Link>}
                     <Divider my="sm" />
 
                     <Group justify="center" grow pb="xl" px="md">

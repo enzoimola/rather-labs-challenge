@@ -1,10 +1,10 @@
-import { Button, Container, Flex, Group, Skeleton, Text } from '@mantine/core';
+import { Button, Container, Flex, Skeleton } from '@mantine/core';
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { MediaCardDetail } from '@/components/atoms/MediaCardDetail/MediaCardDetail';
 import { IMediaDetail } from '@/models/interfaces/mediaDetail.interface';
 import classes from './MediaDetail.module.scss';
-import { DetailType } from '@/pages/[idMedia]';
+import { DetailType } from '@/pages/[type]/[idMedia]';
 import { MediaNoData } from '@/components/atoms/MediaNoData/MediaNoData';
 
 const MediaDetail: React.FC<DetailType> = ({ detailMedia }) => {
