@@ -23,13 +23,9 @@ export const MediaCardDetail: React.FC<IMediaDetail> = (
                 </Text>
             </Group>
             <Card withBorder padding="lg" className={classes.card}>
-                <Card.Section className={classes.sectionCard}>
-                    <Image
-                      src={imageURL}
-                      alt={name}
-                      className={classes.imageCard}
-                      height={100}
-                    />
+                <Card.Section>
+                    <Image src={imageURL} alt={name} height={180} pos="absolute" className={classes.bgImage} />
+                    <Image src={imageURL} alt={name} height={180} className={classes.image} />
                 </Card.Section>
 
                 <Group justify="space-between" mt="md">

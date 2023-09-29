@@ -15,19 +15,20 @@ import { useState } from 'react';
 import { useSelector } from 'react-redux';
 import classes from './Header.module.scss';
 import { useAuth } from '@/context/auth';
+import { selectFavourites } from '@/store/dataSlice';
 
 export const Header = () => {
     const [drawerOpened, { toggle: toggleDrawer, close: closeDrawer }] = useDisclosure(false);
     const router = useRouter();
     const [loadingLogoutBtn, setLoadingLogoutBtn] = useState(false);
     const { logout } = useAuth();
-    const mediaFetched = useSelector((data) => data);
+    const favs = useSelector(selectFavourites);
 
     const onLogoutHandler = async () => {
         setLoadingLogoutBtn(true);
         try {
             await logout();
-            router.replace('/auth/login');
+            router.replace('/auth/login').then();
         } catch (e) {
             console.log(e.message);
         }
@@ -40,11 +41,11 @@ export const Header = () => {
 
                     <Group h="100%" gap={0} visibleFrom="sm">
                        <Link href={{ pathname: '/' }} className={classes.link}>Home</Link>
-                        {mediaFetched.data.favorites.length > 0 && <Link href={{ pathname: '/favorites' }} className={classes.link}>
-                            <Indicator color="red" size={15} label={mediaFetched.data.favorites.length}>
+                        {favs.length > 0 && <Link href={{ pathname: '/favorites' }} className={classes.link}>
+                            <Indicator color="red" size={15} label={favs.length}>
                                 Favourites
                             </Indicator>
-                                                                   </Link>}
+                                            </Link>}
                     </Group>
 
                     <Group visibleFrom="sm">
@@ -72,11 +73,11 @@ export const Header = () => {
                     <Divider my="sm" />
                     <Link href={{ pathname: '/' }} className={classes.link}>Home</Link>
                     <Divider my="sm" />
-                    {mediaFetched.data.favorites.length > 0 && <Link href={{ pathname: '/favorites' }} className={classes.link}>
-                        <Indicator color="red" size={15} label={mediaFetched.data.favorites.length}>
+                    {favs.length > 0 && <Link href={{ pathname: '/favorites' }} className={classes.link}>
+                        <Indicator color="red" size={15} label={favs.length}>
                             Favourites
                         </Indicator>
-                                                               </Link>}
+                                        </Link>}
                     <Divider my="sm" />
 
                     <Group justify="center" grow pb="xl" px="md">

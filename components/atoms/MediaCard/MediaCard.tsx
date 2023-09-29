@@ -6,23 +6,21 @@ import { useRouter } from 'next/router';
 import { useDispatch, useSelector } from 'react-redux';
 import classes from './MediaCard.module.scss';
 import { IMedia } from '@/models/interfaces/media.interface';
-import { saveFavorite } from '@/services/movie/movie.service';
+import { saveFavorite } from '@/services/media/media.service';
 import { IFavMedia } from '@/models/interfaces/favMedia.interface';
-import { setFavoritesMedia } from '@/store/dataSlice';
+import { onFavouredMedia, selectFavourites } from '@/store/dataSlice';
 
 export const MediaCard: React.FC<IMedia> = (
     { id, name, releaseDate, posterPath, voteAverage, isMovie }) => {
     const [loadingBtn, setLoadingBtn] = useState<boolean>(false);
     const [setUnfav, setIsMarkAsFav] = useState<boolean>(false);
-    const [newFavoritesArray, setNewFavoritesArray] = useState<IMedia>();
     const router = useRouter();
     const imageURL = posterPath ? `http://image.tmdb.org/t/p/w500${posterPath}` : '/no-media-image.jpg';
-    const mediaFetched = useSelector((data) => data);
+    const favourites = useSelector(selectFavourites);
     const dispatch = useDispatch();
 
     useEffect(() => {
-        const isFav = mediaFetched.data.favorites.some(md => md.id === id);
-        setNewFavoritesArray(mediaFetched.data.favorites);
+        const isFav = favourites.some(md => md.id === id);
         if (isFav) {
             setIsMarkAsFav(true);
         }
@@ -31,7 +29,7 @@ export const MediaCard: React.FC<IMedia> = (
     const onShowDetailsHandler = (e) => {
         e.preventDefault();
         setLoadingBtn(true);
-        const isMovieParam = isMovie ? 'movie' : 'tv-show';
+        const isMovieParam = isMovie ? 'media' : 'tv-show';
 
         router.push({ pathname: '/[isMovieParam]/[id]', query: { id, isMovieParam } });
     };
@@ -45,11 +43,10 @@ export const MediaCard: React.FC<IMedia> = (
             markAsFav: !setUnfav,
             isMovie,
         };
+        await saveFavorite(body, isMovie);
 
-        const response = await saveFavorite(body);
         const newFav = { id, name, releaseDate, posterPath, voteAverage };
-        setNewFavoritesArray([...newFavoritesArray, newFav]);
-        dispatch(setFavoritesMedia(newFavoritesArray));
+        dispatch(onFavouredMedia(newFav));
 
         setIsMarkAsFav(!setUnfav);
     };
@@ -57,7 +54,8 @@ export const MediaCard: React.FC<IMedia> = (
     return (
         <Card withBorder radius="md" p="md" className={classes.card}>
             <Card.Section>
-                <Image src={imageURL} alt={name} height={180} />
+                <Image src={imageURL} alt={name} height={180} pos="absolute" className={classes.bgImage} />
+                <Image src={imageURL} alt={name} height={180} className={classes.image} />
             </Card.Section>
 
             <Card.Section className={classes.section} mt="md">

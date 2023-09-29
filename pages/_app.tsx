@@ -4,6 +4,7 @@ import Head from 'next/head';
 import { MantineProvider } from '@mantine/core';
 import { useRouter } from 'next/router';
 import { ApolloProvider } from '@apollo/client';
+import { Notifications } from '@mantine/notifications';
 import { wrapper } from '@/store/store';
 import { Header } from '@/components/molecules/Header/Header';
 import { AuthProvider } from '@/context/auth';
@@ -18,6 +19,8 @@ const App = ({ Component, pageProps }: AppProps) => {
   return (
       <ErrorBoundary>
           <MantineProvider theme="light">
+              <Notifications position="bottom-right" />
+
               <Head>
                   <title>Challenge</title>
                   <meta

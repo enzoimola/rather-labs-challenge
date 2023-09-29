@@ -13,7 +13,7 @@ export const getStaticPaths: GetStaticPaths<DetailType> = async () => ({
 
 export async function getStaticProps({ params }) {
     const client = createApolloClient();
-    const movieParam = params.type === 'movie';
+    const movieParam = params.type === 'media';
     const { data } = await client.query({
         query: FETCH_DETAIL_MEDIA(params.idMedia, movieParam),
     });

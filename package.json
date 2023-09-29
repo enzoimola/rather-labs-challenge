@@ -23,6 +23,7 @@
     "@apollo/experimental-nextjs-app-support": "^0.4.3",
     "@mantine/core": "7.0.0",
     "@mantine/hooks": "7.0.0",
+    "@mantine/notifications": "7.0.0",
     "@next/bundle-analyzer": "^13.4.4",
     "@reduxjs/toolkit": "^1.9.5",
     "@tabler/icons-react": "^2.20.0",

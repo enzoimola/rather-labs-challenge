@@ -9,14 +9,14 @@ import {
 } from '@mantine/core';
 import { useRef, useState } from 'react';
 import { useRouter } from 'next/router';
+import { notifications } from '@mantine/notifications';
 import classes from './Login.module.scss';
 import { useAuth } from '@/context/auth';
 
 const Login = () => {
-    const email = useRef();
-    const password = useRef();
+    const emailRef = useRef<HTMLInputElement>();
+    const passwordRef = useRef<HTMLInputElement>();
     const [error, setError] = useState('');
-    const [firebaseError, setFirebasError] = useState('');
     const [loadingBtn, setLoadingBtn] = useState(false);
     const router = useRouter();
     const { login } = useAuth();
@@ -25,10 +25,12 @@ const Login = () => {
 
     const handleLoginSubmit = async (e) => {
         e.preventDefault();
+        const { current: email } = emailRef;
+        const { current: password } = passwordRef;
         setLoadingBtn(false);
 
-        const checkedEmail = checkValidEmail(email.current.value);
-        const checkedPassword = password.current.value.length > 5;
+        const checkedEmail = checkValidEmail(email.value);
+        const checkedPassword = password.value.length > 5;
 
         setError(!checkedEmail ? 'Email is invalid, please type an valid email' :
             !checkedPassword ? 'Password should include at least 6 characters' : null);
@@ -36,17 +38,18 @@ const Login = () => {
         if (checkedEmail && checkedPassword) {
             setLoadingBtn(true);
             try {
-                await login(email.current.value, password.current.value);
+                await login(email.value, password.value);
                 router.push({ pathname: '/' });
-
-                // eslint-disable-next-line @typescript-eslint/no-shadow
             } catch (e) {
-                console.log(e.message);
-                // todo add notificacion msg
-                password.current.value = null;
+                notifications.show({
+                    title: 'Error',
+                    message: String(e),
+                });
+                password.value = null;
+            } finally {
+                setLoadingBtn(false);
             }
             // router.push({ pathname: '/' });
-            setLoadingBtn(false);
         }
     };
 
@@ -64,10 +67,10 @@ const Login = () => {
                 <TextInput
                   label="Email"
                   placeholder="you@ratherlabs.dev"
-                  ref={email}
+                  ref={emailRef}
                   required
                 />
-                <PasswordInput label="Password" placeholder="Your password" ref={password} required mt="md" />
+                <PasswordInput label="Password" placeholder="Your password" ref={passwordRef} required mt="md" />
 
                 <Text className={classes.error} c="dimmed" size="sm" ta="center" mt={10}>
                     {error && error}

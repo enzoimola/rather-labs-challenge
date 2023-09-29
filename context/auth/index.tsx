@@ -1,6 +1,12 @@
 import { createContext, useContext, useEffect, useState } from 'react';
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from 'firebase/auth';
+import {
+    createUserWithEmailAndPassword,
+    signInWithEmailAndPassword,
+    onAuthStateChanged,
+    signOut,
+} from 'firebase/auth';
 import { auth } from '../../firebase.js';
+import { checkUser, createUser } from '@/services/media/media.service';
 
 export const authContext = createContext();
 
@@ -18,11 +24,25 @@ export const AuthProvider = ({ children }) => {
         });
     }, []);
     const signup = async (email: string, password: string): Promise<void> => {
-        await createUserWithEmailAndPassword(auth, email, password);
+        try {
+            await createUserWithEmailAndPassword(
+                auth,
+                email,
+                password
+            );
+            await createUser({ email, password });
+        } catch (e: unknown) {
+            throw new Error('This email is already taken');
+        }
     };
 
     const login = async (email: string, password: string): Promise<void> => {
-        await signInWithEmailAndPassword(auth, email, password);
+        try {
+            await signInWithEmailAndPassword(auth, email, password);
+            await checkUser(email);
+        } catch (e: unknown) {
+            throw new Error("The user doesn't exist, please go to register user");
+        }
     };
 
     const logout = async (): Promise<void> => {
@@ -30,6 +50,8 @@ export const AuthProvider = ({ children }) => {
     };
 
     return (
-        <authContext.Provider value={{ signup, login, user, logout }}>{children}</authContext.Provider>
+        <authContext.Provider value={{ signup, login, user, logout }}>
+            {children}
+        </authContext.Provider>
     );
 };
