@@ -43,7 +43,6 @@ export const MediaCard: React.FC<IMedia> = (
     const onFavoriteHandler = async () => {
         const body: IFavMedia = {
             id,
-            markAsFav: !setUnfav,
             uid: userLogged.uid,
         };
         await saveFavorite(body);

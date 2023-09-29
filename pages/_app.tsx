@@ -32,7 +32,6 @@ const App = ({ Component, pageProps }: AppProps) => {
 
               <AuthProvider>
                   <ApolloProvider client={createApolloClient}>
-                        {showHeader && <Header />}
                       <Component {...pageProps} />
                   </ApolloProvider>
               </AuthProvider>

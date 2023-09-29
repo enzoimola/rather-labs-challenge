@@ -20,14 +20,12 @@ export const Media: React.FC = () => {
         setMedia(result);
     };
 
-    const onChange = (search: string) => {
-        getMovies(search);
-    };
+    const onChange = (search: string) => getMovies(search);
 
     useEffect(() => {
         setMedia(mediaFetched);
         setLoadingPage(false);
-    }, []);
+    }, [mediaFetched]);
 
     if (loadingPage) {
         return (

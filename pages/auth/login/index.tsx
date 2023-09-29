@@ -7,19 +7,19 @@ import {
     Container,
     Button, Anchor,
 } from '@mantine/core';
-import { useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { useRouter } from 'next/router';
 import { notifications } from '@mantine/notifications';
 import classes from './Login.module.scss';
 import { useAuth } from '@/context/auth';
 
-const Login = () => {
+const Login: React.FC = () => {
     const emailRef = useRef<HTMLInputElement>();
     const passwordRef = useRef<HTMLInputElement>();
     const [error, setError] = useState('');
     const [loadingBtn, setLoadingBtn] = useState(false);
     const router = useRouter();
-    const { login } = useAuth();
+    const { login, userLogged } = useAuth();
 
     const checkValidEmail = (emailInput) => /\S+@\S+\.\S+/.test(emailInput);
 
@@ -81,7 +81,14 @@ const Login = () => {
                 </Button>
             </form>
 
-            <Anchor component="button" type="button" c="dimmed" size="xs" onClick={() => router.push('/auth/register')} mt={20}>
+            <Anchor
+              component="button"
+              type="button"
+              c="dimmed"
+              size="xs"
+              onClick={() => router.push('/auth/register')}
+              mt={20}
+            >
                 Don&apos;t have an account? Register
             </Anchor>
         </Paper>

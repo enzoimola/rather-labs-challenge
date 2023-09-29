@@ -11,7 +11,7 @@ export interface DataState {
 }
 
 const initialState: DataState = {
-    media: [],
+    media: [] as Array<IMedia>,
     mediaSelected: null,
     favorites: [],
 };
@@ -20,7 +20,7 @@ export const dataSlice = createSlice({
     name: 'data',
     initialState,
     reducers: {
-        setMedia(state, { payload }: { payload: IMedia }) {
+        setMedia(state, { payload }: { payload: Array<IMedia> }) {
             // eslint-disable-next-line no-param-reassign
             state.media = payload;
         },
@@ -28,7 +28,7 @@ export const dataSlice = createSlice({
             // eslint-disable-next-line no-param-reassign
             state.mediaSelected = payload;
         },
-        setFavoritesMedia(state, { payload }: { payload: IMedia }) {
+        setFavoritesMedia(state, { payload }: { payload: Array<IMedia> }) {
             // eslint-disable-next-line no-param-reassign
             state.favorites = payload;
         },
@@ -54,7 +54,7 @@ export const dataSlice = createSlice({
 });
 
 export const { setMedia, setMediaSelected, setFavoritesMedia, onFavouredMedia } = dataSlice.actions;
-export const selectMedia = (state: AppState) => state.data.media;
-export const selectFavourites = (state: AppState) => state.data.favorites;
+export const selectMedia = (state: AppState) => state.data.media || [];
+export const selectFavourites = (state: AppState) => state.data.favorites || [];
 
 export default dataSlice.reducer;

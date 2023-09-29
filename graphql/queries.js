@@ -26,11 +26,10 @@ export const FETCH_DETAIL_MEDIA = (idMedia, isMovie) => gql`
     }
 `;
 
-export const FETCH_FAVORITES_MEDIA = gql`
+export const FETCH_FAVORITES_MEDIA = (uid) => gql`
     query {
-      getFavorites  {
-        id,
-      markAsFav
+      getFavorites(uid:"${uid}")  {
+        id
       }
     }
 `;

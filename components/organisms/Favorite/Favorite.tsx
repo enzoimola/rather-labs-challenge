@@ -26,7 +26,7 @@ export const FavoriteWrapper: React.FC = () => {
     useEffect(() => {
         setMedia(mediaFetched.data.favorites);
         setLoadingPage(false);
-    }, []);
+    }, [mediaFetched]);
 
     if (loadingPage) {
         return (
