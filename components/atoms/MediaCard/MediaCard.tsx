@@ -4,11 +4,13 @@ import React, { useEffect, useState } from 'react';
 import moment from 'moment';
 import { useRouter } from 'next/router';
 import { useDispatch, useSelector } from 'react-redux';
+import { UserCredential } from 'firebase/auth';
 import classes from './MediaCard.module.scss';
 import { IMedia } from '@/models/interfaces/media.interface';
 import { saveFavorite } from '@/services/media/media.service';
 import { IFavMedia } from '@/models/interfaces/favMedia.interface';
 import { onFavouredMedia, selectFavourites } from '@/store/dataSlice';
+import { useAuth } from '@/context/auth';
 
 export const MediaCard: React.FC<IMedia> = (
     { id, name, releaseDate, posterPath, voteAverage, isMovie }) => {
@@ -18,6 +20,7 @@ export const MediaCard: React.FC<IMedia> = (
     const imageURL = posterPath ? `http://image.tmdb.org/t/p/w500${posterPath}` : '/no-media-image.jpg';
     const favourites = useSelector(selectFavourites);
     const dispatch = useDispatch();
+    const { userLogged } : UserCredential = useAuth();
 
     useEffect(() => {
         const isFav = favourites.some(md => md.id === id);
@@ -41,9 +44,9 @@ export const MediaCard: React.FC<IMedia> = (
         const body: IFavMedia = {
             id,
             markAsFav: !setUnfav,
-            isMovie,
+            uid: userLogged.uid,
         };
-        await saveFavorite(body, isMovie);
+        await saveFavorite(body);
 
         const newFav = { id, name, releaseDate, posterPath, voteAverage };
         dispatch(onFavouredMedia(newFav));

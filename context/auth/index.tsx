@@ -3,10 +3,10 @@ import {
     createUserWithEmailAndPassword,
     signInWithEmailAndPassword,
     onAuthStateChanged,
-    signOut,
+    signOut, UserCredential,
 } from 'firebase/auth';
 import { auth } from '../../firebase.js';
-import { checkUser, createUser } from '@/services/media/media.service';
+import { getUser, createUser } from '@/services/media/media.service';
 
 export const authContext = createContext();
 
@@ -17,20 +17,20 @@ export const useAuth = () => {
 };
 
 export const AuthProvider = ({ children }) => {
-    const [user, setUser] = useState(null);
+    const [userLogged, setUserLogged] = useState(null);
     useEffect(() => {
         onAuthStateChanged(auth, currentUser => {
-            setUser(currentUser);
+            setUserLogged(currentUser);
         });
     }, []);
     const signup = async (email: string, password: string): Promise<void> => {
         try {
-            await createUserWithEmailAndPassword(
+            const userResp: UserCredential = await createUserWithEmailAndPassword(
                 auth,
                 email,
                 password
             );
-            await createUser({ email, password });
+            await createUser({ email, password, uid: userResp.user.uid });
         } catch (e: unknown) {
             throw new Error('This email is already taken');
         }
@@ -38,10 +38,12 @@ export const AuthProvider = ({ children }) => {
 
     const login = async (email: string, password: string): Promise<void> => {
         try {
-            await signInWithEmailAndPassword(auth, email, password);
-            await checkUser(email);
+            // eslint-disable-next-line max-len
+            const { user }: UserCredential = await signInWithEmailAndPassword(auth, email, password);
+            return await getUser(user.uid);
         } catch (e: unknown) {
-            throw new Error("The user doesn't exist, please go to register user");
+            console.log(e);
+            throw new Error('Invalid credentials');
         }
     };
 
@@ -50,7 +52,7 @@ export const AuthProvider = ({ children }) => {
     };
 
     return (
-        <authContext.Provider value={{ signup, login, user, logout }}>
+        <authContext.Provider value={{ signup, login, userLogged, logout }}>
             {children}
         </authContext.Provider>
     );

@@ -29,21 +29,21 @@ const Login = () => {
         const { current: password } = passwordRef;
         setLoadingBtn(false);
 
-        const checkedEmail = checkValidEmail(email.value);
-        const checkedPassword = password.value.length > 5;
+        const checkedEmail = checkValidEmail(email?.value);
+        const checkedPassword = password?.value.length > 5;
 
         setError(!checkedEmail ? 'Email is invalid, please type an valid email' :
             !checkedPassword ? 'Password should include at least 6 characters' : null);
 
-        if (checkedEmail && checkedPassword) {
+        if (checkedEmail && checkedPassword && email && password) {
             setLoadingBtn(true);
             try {
                 await login(email.value, password.value);
-                router.push({ pathname: '/' });
-            } catch (e) {
+                router.push({ pathname: '/' }).then();
+            } catch (err: unknown) {
                 notifications.show({
                     title: 'Error',
-                    message: String(e),
+                    message: String(err),
                 });
                 password.value = null;
             } finally {
@@ -82,7 +82,7 @@ const Login = () => {
             </form>
 
             <Anchor component="button" type="button" c="dimmed" size="xs" onClick={() => router.push('/auth/register')} mt={20}>
-                Don't have an account? Register
+                Don&apos;t have an account? Register
             </Anchor>
         </Paper>
 

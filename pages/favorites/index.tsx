@@ -20,15 +20,11 @@ export async function getStaticProps() {
 
 export type FavoritesType = { favorites: Array<IMedia> };
 
-const Favorites: React.FC<FavoritesType> = ({ favorites }) => {
-    console.log('FAVVVVVV');
-    console.log(favorites);
-    return (<>
+const Favorites: React.FC<FavoritesType> = ({ favorites }) => (<>
         <Flex direction="column" gap="sm" justify="center" maw={960} mx="auto">
             <Title>Favourites media</Title>
             <FavoriteWrapper />
         </Flex>
-            </>);
-};
+                                                               </>);
 
 export default Favorites;

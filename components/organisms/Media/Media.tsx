@@ -4,15 +4,16 @@ import { useSelector } from 'react-redux';
 import { MediaSearch } from '@/components/atoms/MediaSearch/MediaSearch';
 import { MediaGrid } from '@/components/molecules/MediaGrid/MediaGrid';
 import { IMedia } from '@/models/interfaces/media.interface';
+import { selectMedia } from '@/store/dataSlice';
 
 export const Media: React.FC = () => {
     const [media, setMedia] = useState<Array<IMedia>>([]);
     const [loadingPage, setLoadingPage] = useState<boolean>(true);
-    const mediaFetched = useSelector((data) => data);
+    const mediaFetched = useSelector(selectMedia);
 
     const getMovies = (search?: string) => {
         if (!search) {
-            setMedia(mediaFetched.data.media);
+            setMedia(mediaFetched);
             return;
         }
         const result = media.filter((md) => md.name.toLowerCase().includes(search.toLowerCase()));
@@ -24,7 +25,7 @@ export const Media: React.FC = () => {
     };
 
     useEffect(() => {
-        setMedia(mediaFetched.data.media);
+        setMedia(mediaFetched);
         setLoadingPage(false);
     }, []);
 

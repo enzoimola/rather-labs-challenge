@@ -14,9 +14,9 @@ export async function getStaticProps() {
         query: FETCH_MEDIA,
 
     });
-    const { data: dataFav } = await client.query({
-        query: FETCH_FAVORITES_MEDIA,
-    });
+    // const { data: dataFav } = await client.query({
+    //     query: FETCH_FAVORITES_MEDIA,
+    // });
     const { data: dataURLM } = await client.query({
         query: FETCH_URL_MEDIA,
     });
@@ -24,7 +24,7 @@ export async function getStaticProps() {
     return {
         props: {
             media: dataMedia.media,
-            favorites: dataFav.getFavorites,
+            // favorites: dataFav.getFavorites,
             urls: dataURLM.getURLMedia,
         },
     };
@@ -33,17 +33,16 @@ export type MediaType = { media: Array<IMedia>, favorites: Array<IFavMedia>, url
 
 const HomePage: React.FC<MediaType> = ({ media, favorites, urls }) => {
     const dispatch = useDispatch();
-    const mediaFetched = useSelector((data) => data);
 
     useEffect(() => {
         dispatch(setMedia(media));
     }, []);
 
-    useEffect(() => {
-        const idSet = new Set(favorites.map(item => item.id));
-        const commonItems = media.filter(item => idSet.has(item.id));
-        dispatch(setFavoritesMedia(commonItems));
-    }, [favorites]);
+    // useEffect(() => {
+    //     const idSet = new Set(favorites.map(item => item.id));
+    //     const commonItems = media.filter(item => idSet.has(item.id));
+    //     dispatch(setFavoritesMedia(commonItems));
+    // }, [favorites]);
 
     return (<MainLayout />);
 };
