@@ -5,8 +5,10 @@ import {
     onAuthStateChanged,
     signOut, UserCredential,
 } from 'firebase/auth';
+import { useDispatch } from 'react-redux';
 import { auth } from '../../firebase.js';
 import { getUser, createUser } from '@/services/media/media.service';
+import { setUserId } from '@/store/dataSlice';
 
 export const authContext = createContext();
 
@@ -18,6 +20,8 @@ export const useAuth = () => {
 
 export const AuthProvider = ({ children }) => {
     const [userLogged, setUserLogged] = useState(null);
+    const dispatch = useDispatch();
+
     useEffect(() => {
         onAuthStateChanged(auth, currentUser => {
             setUserLogged(currentUser);
@@ -40,6 +44,8 @@ export const AuthProvider = ({ children }) => {
         try {
             // eslint-disable-next-line max-len
             const { user }: UserCredential = await signInWithEmailAndPassword(auth, email, password);
+            dispatch(setUserId(user.uid));
+
             return await getUser(user.uid);
         } catch (e: unknown) {
             console.log(e);

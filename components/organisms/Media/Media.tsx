@@ -8,7 +8,6 @@ import { selectMedia } from '@/store/dataSlice';
 
 export const Media: React.FC = () => {
     const [media, setMedia] = useState<Array<IMedia>>([]);
-    const [loadingPage, setLoadingPage] = useState<boolean>(true);
     const mediaFetched = useSelector(selectMedia);
 
     const getMovies = (search?: string) => {
@@ -24,23 +23,7 @@ export const Media: React.FC = () => {
 
     useEffect(() => {
         setMedia(mediaFetched);
-        setLoadingPage(false);
     }, [mediaFetched]);
-
-    if (loadingPage) {
-        return (
-            <>
-                <Container m={10} direction="column" gap="sm" justify="center" w={960} mx="auto">
-                    <Skeleton height={300} radius="xl" />
-                    <Skeleton height={50} circle mb="xl" mt="xl" />
-                    <Skeleton height={20} radius="xl" />
-                    <Skeleton height={20} mt={6} radius="xl" />
-                    <Skeleton height={20} mt={6} radius="xl" />
-                    <Skeleton height={20} mt={6} radius="xl" width="70%" />
-                </Container>
-            </>
-        );
-    }
 
     return (
         <>

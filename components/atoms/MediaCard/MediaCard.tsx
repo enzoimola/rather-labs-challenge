@@ -44,6 +44,7 @@ export const MediaCard: React.FC<IMedia> = (
         const body: IFavMedia = {
             id,
             uid: userLogged.uid,
+            isFav: setUnfav,
         };
         await saveFavorite(body);
 

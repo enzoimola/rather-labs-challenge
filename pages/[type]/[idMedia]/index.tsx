@@ -5,6 +5,7 @@ import MediaDetail from '@/components/molecules/MediaDetail';
 import { createApolloClient } from '@/apollo-client';
 import { IMediaDetail } from '@/models/interfaces/mediaDetail.interface';
 import { FETCH_DETAIL_MEDIA } from '@/graphql/queries';
+import { MainLayout } from '@/layouts/MainLayout';
 
 export const getStaticPaths: GetStaticPaths<DetailType> = async () => ({
     paths: [], //indicates that no page needs be created at build time
@@ -26,5 +27,8 @@ export async function getStaticProps({ params }) {
 }
 
 export type DetailType = { detailMedia: IMediaDetail };
-const Detail: React.FC<DetailType> = ({ detailMedia }) => <MediaDetail detailMedia={detailMedia} />;
+const Detail: React.FC<DetailType> = ({ detailMedia }) =>
+    <MainLayout>
+        <MediaDetail detailMedia={detailMedia} />
+    </MainLayout>;
 export default Detail;

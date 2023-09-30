@@ -44,7 +44,7 @@ export const getUser = async (uid: string): Promise<any> => {
 export const saveFavorite = async (
     media: IFavMedia): Promise<void> => {
     try {
-        const body = { id: media.id, uid: media.uid };
+        const body = { id: media.id, uid: media.uid, isFav: media.isFav };
 
         const response = await fetch('http://localhost:8080/add-favorite', {
             method: 'POST',

@@ -16,13 +16,14 @@ import { useSelector } from 'react-redux';
 import classes from './Header.module.scss';
 import { useAuth } from '@/context/auth';
 import { selectFavourites } from '@/store/dataSlice';
+import { IFavMedia } from '@/models/interfaces/favMedia.interface';
 
 export const Header = () => {
     const [drawerOpened, { toggle: toggleDrawer, close: closeDrawer }] = useDisclosure(false);
     const router = useRouter();
     const [loadingLogoutBtn, setLoadingLogoutBtn] = useState(false);
     const { logout } = useAuth();
-    const favs = useSelector(selectFavourites);
+    const favs: Array<IFavMedia> = useSelector(selectFavourites);
 
     const onLogoutHandler = async () => {
         setLoadingLogoutBtn(true);

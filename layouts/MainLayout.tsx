@@ -1,28 +1,42 @@
 import { AppShell } from '@mantine/core';
 
-import React, { PropsWithChildren, useEffect } from 'react';
-import { useDispatch } from 'react-redux';
+import React, { PropsWithChildren, useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { UserCredential } from 'firebase/auth';
 import { Header } from '@/components/molecules/Header/Header';
 import { createApolloClient } from '@/apollo-client';
 import { FETCH_FAVORITES_MEDIA, FETCH_MEDIA } from '@/graphql/queries';
-import { setFavoritesMedia, setMedia } from '@/store/dataSlice';
+import { selectUserId, setFavoritesMedia, setMedia } from '@/store/dataSlice';
+import SkeletonHeader from '@/components/atoms/skeletonHeader';
+import SkeletonMedia from '@/components/atoms/skeletonMedia';
+import { useAuth } from '@/context/auth';
+import { ErrorBoundary } from '@/components/atoms/ErrorBoundary/ErrorBoundary';
 
 export const MainLayout: React.FC<PropsWithChildren> = ({ children }) => {
     const client = createApolloClient();
     const dispatch = useDispatch();
+    const userId = useSelector(selectUserId);
+    const [loadingFavs, setLoadingFavs] = useState<boolean>(false);
+    const { userLogged } : UserCredential = useAuth();
+
     const fetchFavourites = async () => {
-        const { data: media } = await client.query({
-            query: FETCH_MEDIA,
-        });
+        try {
+            const { data: media } = await client.query({
+                query: FETCH_MEDIA,
+            });
 
-        const { data: favorites } = await client.query({
-            query: FETCH_FAVORITES_MEDIA('zaIyMbALWOSLogDTbV5oGXESh6u1'),
-        });
+            const { data: favorites } = await client.query({
+                query: FETCH_FAVORITES_MEDIA(userId || userLogged.uid),
+            });
+            setLoadingFavs(favorites.getFavorites.length >= 0);
 
-        const idSet = new Set(favorites.getFavorites.map(item => item.id));
-        const commonItems = media.media.filter(item => idSet.has(item.id));
-        dispatch(setMedia(media.media));
-        dispatch(setFavoritesMedia(commonItems));
+            const idSet = new Set(favorites.getFavorites.map(item => item.id));
+            const commonItems = media.media.filter(item => idSet.has(item.id));
+            dispatch(setMedia(media.media));
+            dispatch(setFavoritesMedia(commonItems));
+        } catch (e) {
+            return (<ErrorBoundary />);
+        }
     };
 
     useEffect(() => {
@@ -35,10 +49,12 @@ export const MainLayout: React.FC<PropsWithChildren> = ({ children }) => {
           padding="md"
         >
             <AppShell.Header>
-                <Header />
+                {loadingFavs && <Header />}
+                {!loadingFavs && <SkeletonHeader />}
             </AppShell.Header>
-            <AppShell.Main pt={10}>
-                {children}
+            <AppShell.Main pt={80}>
+                {loadingFavs && children}
+                {!loadingFavs && <SkeletonMedia />}
             </AppShell.Main>
         </AppShell>
     );
