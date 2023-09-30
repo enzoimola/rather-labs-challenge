@@ -19,7 +19,7 @@ export const MediaSearch: React.FC<MediaSearchType> = ({ onChange }) => {
           defaultValue={search}
           radius="xl"
           size="md"
-          placeholder="Search movies or TV shows by gender or title"
+          placeholder="Find Movies and TV Shows by their titles"
           onChange={(e) => setSearch(e.target.value)}
         />);
 };

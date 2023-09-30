@@ -15,7 +15,7 @@ import { useAuth } from '@/context/auth';
 export const MediaCard: React.FC<IMedia> = (
     { id, name, releaseDate, posterPath, voteAverage, isMovie }) => {
     const [loadingBtn, setLoadingBtn] = useState<boolean>(false);
-    const [setUnfav, setIsMarkAsFav] = useState<boolean>(false);
+    const [setFav, setIsMarkAsFav] = useState<boolean>(false);
     const router = useRouter();
     const imageURL = posterPath ? `http://image.tmdb.org/t/p/w500${posterPath}` : '/no-media-image.jpg';
     const favourites = useSelector(selectFavourites);
@@ -46,14 +46,14 @@ export const MediaCard: React.FC<IMedia> = (
         const body: IFavMedia = {
             id,
             uid: userLogged.uid,
-            isFav: setUnfav,
+            isFav: setFav,
         };
         await saveFavorite(body);
 
         const newFav = { id, name, releaseDate, posterPath, voteAverage };
         dispatch(onFavouredMedia(newFav));
 
-        setIsMarkAsFav(!setUnfav);
+        setIsMarkAsFav(!setFav);
     };
 
     return (
@@ -97,8 +97,8 @@ export const MediaCard: React.FC<IMedia> = (
                     Show details
                 </Button>
                 {!checkMainPage && <ActionIcon variant="default" radius="md" size={36} onClick={onFavoriteHandler}>
-                    {!setUnfav && <IconHeart className={classes.like} stroke={1.5} />}
-                    {setUnfav && <IconHeartFilled className={classes.like} stroke={1.5} />}
+                    {!setFav && <IconHeart className={classes.like} stroke={1.5} />}
+                    {setFav && <IconHeartFilled className={classes.like} stroke={1.5} />}
                                    </ActionIcon>}
             </Group>
         </Card>

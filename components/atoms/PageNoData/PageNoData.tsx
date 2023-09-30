@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
 import { Button, Container, Group, Text, Title } from '@mantine/core';
 import { useRouter } from 'next/router';
-import classes from './MediaNoData.module.scss';
+import classes from './PageNoData.module.scss';
 
-export type NoMediaData = {
+export type PageNoData = {
     title: string,
     text: string,
     returnBack: boolean
 };
-export const MediaNoData: React.FC<NoMediaData> = ({ title, text, returnBack }) => {
+export const PageNoData: React.FC<PageNoData> = ({ title, text, returnBack }) => {
     const router = useRouter();
     const [loadingBtn, setLoadingBtn] = useState(false);
     const onBackHandler = () => {

@@ -5,7 +5,7 @@ import { MediaCardDetail } from '@/components/atoms/MediaCardDetail/MediaCardDet
 import { IMediaDetail } from '@/models/interfaces/mediaDetail.interface';
 import classes from './MediaDetail.module.scss';
 import { DetailType } from '@/pages/[type]/[idMedia]';
-import { MediaNoData } from '@/components/atoms/MediaNoData/MediaNoData';
+import { PageNoData } from '@/components/atoms/PageNoData/PageNoData';
 
 const MediaDetail: React.FC<DetailType> = ({ detailMedia }) => {
     const [media, setMedia] = useState<IMediaDetail>();
@@ -46,7 +46,11 @@ const MediaDetail: React.FC<DetailType> = ({ detailMedia }) => {
 
     if (!media?.id) {
         return (
-            <MediaNoData text="No films or TV shows matching." title={"It seems we're in the Upside Down."} returnBack={false} />
+            <PageNoData
+              text="No films or TV shows matching."
+              title={"It seems we're in the Upside Down."}
+              returnBack={false}
+            />
         );
     }
 

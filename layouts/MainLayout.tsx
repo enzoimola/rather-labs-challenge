@@ -2,23 +2,19 @@ import { AppShell } from '@mantine/core';
 
 import React, { PropsWithChildren, useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { notifications } from '@mantine/notifications';
-import { useRouter } from 'next/router';
 import { Header } from '@/components/molecules/Header/Header';
 import { createApolloClient } from '@/apollo-client';
 import { FETCH_FAVORITES_MEDIA, FETCH_MEDIA } from '@/graphql/queries';
 import { setFavoritesMedia, setMedia } from '@/store/dataSlice';
 import SkeletonHeader from '@/components/atoms/SkeletonHeader';
-import SkeletonMedia from '@/components/atoms/SkeletonMedia';
-import { useAuth } from '@/context/auth';
+import { PageNoData } from '@/components/atoms/PageNoData/PageNoData';
 
 export const MainLayout: React.FC<PropsWithChildren> = ({ children }) => {
     const client = createApolloClient();
     const dispatch = useDispatch();
     const [loadingFavs, setLoadingFavs] = useState<boolean>(false);
-    const router = useRouter();
-    const { logout } = useAuth();
 
+    // eslint-disable-next-line consistent-return
     const fetchMedia = async () => {
         try {
             const { data: media } = await client.query({
@@ -35,12 +31,13 @@ export const MainLayout: React.FC<PropsWithChildren> = ({ children }) => {
             dispatch(setMedia(media.media));
             dispatch(setFavoritesMedia(commonItems));
         } catch (e) {
-            notifications.show({
-                title: 'Error',
-                message: 'Fail fetching external api',
-            });
-            await logout();
-            router.replace('/auth/login').then();
+            return (
+                <PageNoData
+                  text="Something bad just happened.."
+                  title={"Our servers could not handle your request. Don't worry, our development team was already notified. Try refreshing the page"}
+                  returnBack
+                />
+                );
         }
     };
 
@@ -58,8 +55,7 @@ export const MainLayout: React.FC<PropsWithChildren> = ({ children }) => {
                 {!loadingFavs && <SkeletonHeader />}
             </AppShell.Header>
             <AppShell.Main pt={80}>
-                {loadingFavs && children}
-                {!loadingFavs && <SkeletonMedia />}
+                {children}
             </AppShell.Main>
         </AppShell>
     );
