@@ -37,6 +37,8 @@ export const MediaCard: React.FC<IMedia> = (
         router.push({ pathname: '/[isMovieParam]/[id]', query: { id, isMovieParam } });
     };
 
+    const checkMainPage = router.pathname === ('/');
+
     const icon = <IconStar style={{ width: 20, height: 20 }} />;
     const voteAvg = !voteAverage ? 0 : voteAverage.toFixed(1);
 
@@ -94,10 +96,10 @@ export const MediaCard: React.FC<IMedia> = (
                 <Button variant="outline" radius="md" style={{ flex: 1 }} onClick={onShowDetailsHandler} loading={loadingBtn}>
                     Show details
                 </Button>
-                <ActionIcon variant="default" radius="md" size={36} onClick={onFavoriteHandler}>
+                {!checkMainPage && <ActionIcon variant="default" radius="md" size={36} onClick={onFavoriteHandler}>
                     {!setUnfav && <IconHeart className={classes.like} stroke={1.5} />}
                     {setUnfav && <IconHeartFilled className={classes.like} stroke={1.5} />}
-                </ActionIcon>
+                                   </ActionIcon>}
             </Group>
         </Card>
     );

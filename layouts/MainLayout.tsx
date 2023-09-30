@@ -1,14 +1,13 @@
 import { AppShell } from '@mantine/core';
 
 import React, { PropsWithChildren, useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { UserCredential } from 'firebase/auth';
+import { useDispatch } from 'react-redux';
 import { notifications } from '@mantine/notifications';
 import { useRouter } from 'next/router';
 import { Header } from '@/components/molecules/Header/Header';
 import { createApolloClient } from '@/apollo-client';
 import { FETCH_FAVORITES_MEDIA, FETCH_MEDIA } from '@/graphql/queries';
-import { selectUserId, setFavoritesMedia, setMedia } from '@/store/dataSlice';
+import { setFavoritesMedia, setMedia } from '@/store/dataSlice';
 import SkeletonHeader from '@/components/atoms/SkeletonHeader';
 import SkeletonMedia from '@/components/atoms/SkeletonMedia';
 import { useAuth } from '@/context/auth';
@@ -16,19 +15,18 @@ import { useAuth } from '@/context/auth';
 export const MainLayout: React.FC<PropsWithChildren> = ({ children }) => {
     const client = createApolloClient();
     const dispatch = useDispatch();
-    const userId = useSelector(selectUserId);
     const [loadingFavs, setLoadingFavs] = useState<boolean>(false);
-    const { userLogged } : UserCredential = useAuth();
     const router = useRouter();
+    const { logout } = useAuth();
 
-    const fetchFavourites = async () => {
+    const fetchMedia = async () => {
         try {
             const { data: media } = await client.query({
                 query: FETCH_MEDIA,
             });
 
             const { data: favorites } = await client.query({
-                query: FETCH_FAVORITES_MEDIA(userId || userLogged.uid),
+                query: FETCH_FAVORITES_MEDIA(localStorage.getItem('uid')),
             });
             setLoadingFavs(favorites.getFavorites.length >= 0);
 
@@ -41,12 +39,13 @@ export const MainLayout: React.FC<PropsWithChildren> = ({ children }) => {
                 title: 'Error',
                 message: 'Fail fetching external api',
             });
+            await logout();
             router.replace('/auth/login').then();
         }
     };
 
     useEffect(() => {
-        fetchFavourites().then();
+        fetchMedia().then();
     }, []);
 
     return (

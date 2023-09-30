@@ -46,6 +46,7 @@ export const AuthProvider = ({ children }) => {
         try {
             // eslint-disable-next-line max-len
             const { user }: UserCredential = await signInWithEmailAndPassword(auth, email, password);
+            localStorage.setItem('uid', user.uid);
             dispatch(setUserId(user.uid));
 
             return await getUser(user.uid);
@@ -57,11 +58,14 @@ export const AuthProvider = ({ children }) => {
 
     const logout = async (): Promise<void> => {
         await signOut(auth);
+        localStorage.removeItem('uid');
     };
+
+    const isAuthenticated = (): boolean => localStorage.getItem('uid');
 
     return (
             <authContext.Provider
-              value={{ isAuthenticated: !!userLogged, signup, login, userLogged, logout }}
+              value={{ isAuthenticated, signup, login, userLogged, logout }}
             >
                 {children}
             </authContext.Provider>

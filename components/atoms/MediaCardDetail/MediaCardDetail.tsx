@@ -1,17 +1,48 @@
-import { Card, Image, Text, Group, Badge } from '@mantine/core';
-import React from 'react';
+import { Card, Image, Text, Group, Badge, Button, ActionIcon } from '@mantine/core';
+import React, { useEffect, useState } from 'react';
 import moment from 'moment/moment';
-import { IconStar } from '@tabler/icons-react';
+import { IconHeart, IconHeartFilled, IconStar } from '@tabler/icons-react';
+import { useDispatch, useSelector } from 'react-redux';
+import { UserCredential } from 'firebase/auth';
 import classes from './MediaCardDetail.module.scss';
 import TableCardDetail from '@/components/atoms/TableCardDetail/TableCardDetail';
+import { IFavMedia } from '@/models/interfaces/favMedia.interface';
+import { saveFavorite } from '@/services/media/media.service';
+import { onFavouredMedia, selectFavourites } from '@/store/dataSlice';
+import { useAuth } from '@/context/auth';
 
 export const MediaCardDetail =
-    ({ name, releaseDate, posterPath, overview,
+    ({ id, name, releaseDate, posterPath, overview,
         voteAverage, tagline, actors }) => {
     const imageURL = `http://image.tmdb.org/t/p/w500/${posterPath}`;
 
     const icon = <IconStar style={{ width: 20, height: 20 }} />;
     const voteAvg = voteAverage.toFixed(1);
+    const [setFav, setIsMarkAsFav] = useState<boolean>(false);
+    const dispatch = useDispatch();
+    const favourites = useSelector(selectFavourites);
+    const { userLogged } : UserCredential = useAuth();
+
+    useEffect(() => {
+        const isFav = favourites.some(md => md.id === id);
+        if (isFav) {
+            setIsMarkAsFav(true);
+        }
+    }, []);
+
+    const onFavoriteHandler = async () => {
+        const body: IFavMedia = {
+            id,
+            uid: userLogged.uid,
+            isFav: setFav,
+        };
+        await saveFavorite(body);
+
+        const newFav = { id, name, releaseDate, posterPath, voteAverage };
+        dispatch(onFavouredMedia(newFav));
+
+        setIsMarkAsFav(!setFav);
+    };
 
     return (
         <>
@@ -52,7 +83,11 @@ export const MediaCardDetail =
                 <Text mt="sm" mb="xl" c="dimmed" fz="sm">
                     {overview}
                 </Text>
-
+                <Group />
+                <Button color="red" variant="outline" radius="md" onClick={onFavoriteHandler}>
+                    {!setFav && <Text>Add to favorite</Text>}
+                    {setFav && <Text>Remove from favorite</Text>}
+                </Button>
                 <Text mt="xl" mb="md" ta="center" c="dimmed" fz="md" fw={700}>
                     Cast members
                 </Text>
