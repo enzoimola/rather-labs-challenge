@@ -6,9 +6,11 @@ import {
     signOut, UserCredential,
 } from 'firebase/auth';
 import { useDispatch } from 'react-redux';
+import { useRouter } from 'next/router';
 import { auth } from '../../firebase.js';
 import { getUser, createUser } from '@/services/media/media.service';
 import { setUserId } from '@/store/dataSlice';
+import NotAllowedAccess from '@/components/atoms/NotAllowedAccess';
 
 export const authContext = createContext();
 
@@ -58,8 +60,19 @@ export const AuthProvider = ({ children }) => {
     };
 
     return (
-        <authContext.Provider value={{ signup, login, userLogged, logout }}>
-            {children}
-        </authContext.Provider>
+            <authContext.Provider
+              value={{ isAuthenticated: !!userLogged, signup, login, userLogged, logout }}
+            >
+                {children}
+            </authContext.Provider>
     );
+};
+
+export const ProtectRoute = ({ children }) => {
+    const { isAuthenticated } = useAuth();
+    const router = useRouter();
+    if ((!isAuthenticated && router.pathname !== '/auth/login')) {
+        return <NotAllowedAccess />;
+    }
+    return children;
 };

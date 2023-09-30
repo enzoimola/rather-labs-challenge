@@ -2,21 +2,14 @@ import '@mantine/core/styles.css';
 import type { AppProps } from 'next/app';
 import Head from 'next/head';
 import { MantineProvider } from '@mantine/core';
-import { useRouter } from 'next/router';
 import { ApolloProvider } from '@apollo/client';
 import { Notifications } from '@mantine/notifications';
 import { wrapper } from '@/store/store';
-import { Header } from '@/components/molecules/Header/Header';
-import { AuthProvider } from '@/context/auth';
+import { AuthProvider, ProtectRoute } from '@/context/auth';
 import { ErrorBoundary } from '@/components/atoms/ErrorBoundary/ErrorBoundary';
 import { createApolloClient } from '@/apollo-client';
 
-const App = ({ Component, pageProps }: AppProps) => {
-  const router = useRouter();
-
-  const showHeader = !router.pathname.includes('auth');
-
-  return (
+const App = ({ Component, pageProps }: AppProps) => (
       <ErrorBoundary>
           <MantineProvider theme="light">
               <Notifications position="bottom-right" />
@@ -31,14 +24,15 @@ const App = ({ Component, pageProps }: AppProps) => {
               </Head>
 
               <AuthProvider>
-                  <ApolloProvider client={createApolloClient}>
-                      <Component {...pageProps} />
-                  </ApolloProvider>
+                  <ProtectRoute>
+                      <ApolloProvider client={createApolloClient}>
+                          <Component {...pageProps} />
+                      </ApolloProvider>
+                  </ProtectRoute>
               </AuthProvider>
 
           </MantineProvider>
       </ErrorBoundary>
   );
-};
 
 export default wrapper.withRedux(App);
