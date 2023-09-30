@@ -15,13 +15,22 @@ export const FETCH_MEDIA = gql`
 export const FETCH_DETAIL_MEDIA = (idMedia, isMovie) => gql`
     query {
       detailMedia (id:${idMedia},isMovie: ${isMovie} ) {
-        id,
-        name,
+        id
+        name
         posterPath
-        releaseDate,
-        voteAverage,
-        overview,
+        releaseDate
+        voteAverage
+        overview
         tagline
+        homepage
+        actors {
+          id
+          name
+          character
+          knowForDepartment
+          popularity
+          profilePath
+        }
       }
     }
 `;
@@ -30,6 +39,15 @@ export const FETCH_FAVORITES_MEDIA = (uid) => gql`
     query {
       getFavorites(uid:"${uid}")  {
         id
+      }
+    }
+`;
+
+export const FETCH_USER_LOGGED = (uid) => gql`
+    query {
+     getUser(uid:"${uid}") {
+        email,
+        uid
       }
     }
 `;

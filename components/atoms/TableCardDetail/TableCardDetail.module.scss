@@ -15,6 +15,18 @@
   }
 }
 
+.stickyTable {
+  overflow: auto; /* Enable scrolling for the table body */
+  max-height: 400px;
+}
+
+.stickyTable thead {
+  position: sticky;
+  top: 0;
+  background-color: #fff; /* Set the background color for the sticky header */
+  z-index: 1; /* Ensure it's above the table body content */
+}
+
 .scrolled {
   box-shadow: var(--mantine-shadow-sm);
 }

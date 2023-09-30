@@ -1,12 +1,13 @@
-import { Card, Image, Text, Group, Badge, Rating, Slider, Chip } from '@mantine/core';
+import { Card, Image, Text, Group, Badge } from '@mantine/core';
 import React from 'react';
 import moment from 'moment/moment';
 import { IconStar } from '@tabler/icons-react';
 import classes from './MediaCardDetail.module.scss';
-import { IMediaDetail } from '@/models/interfaces/mediaDetail.interface';
+import TableCardDetail from '@/components/atoms/TableCardDetail/TableCardDetail';
 
-export const MediaCardDetail: React.FC<IMediaDetail> = (
-    { name, releaseDate, posterPath, overview, voteAverage, tagline }) => {
+export const MediaCardDetail =
+    ({ name, releaseDate, posterPath, overview,
+        voteAverage, tagline, actors }) => {
     const imageURL = `http://image.tmdb.org/t/p/w500/${posterPath}`;
 
     const icon = <IconStar style={{ width: 20, height: 20 }} />;
@@ -52,14 +53,10 @@ export const MediaCardDetail: React.FC<IMediaDetail> = (
                     {overview}
                 </Text>
 
-                {/*<Group gap={7} mt={5} justify="start">*/}
-                {/*    {genresBadges}*/}
-                {/*</Group>*/}
-
-                {/*<Text mt="xl" mb="md" ta="center" c="dimmed" fz="md" fw={700}>*/}
-                {/*    Poduction companies*/}
-                {/*</Text>*/}
-                {/*<TableCardDetail data={productionCompanies} p={40} />*/}
+                <Text mt="xl" mb="md" ta="center" c="dimmed" fz="md" fw={700}>
+                    Cast members
+                </Text>
+                <TableCardDetail data={actors} p={40} />
             </Card>
         </>
     );

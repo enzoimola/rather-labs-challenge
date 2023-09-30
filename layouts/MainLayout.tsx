@@ -9,8 +9,8 @@ import { Header } from '@/components/molecules/Header/Header';
 import { createApolloClient } from '@/apollo-client';
 import { FETCH_FAVORITES_MEDIA, FETCH_MEDIA } from '@/graphql/queries';
 import { selectUserId, setFavoritesMedia, setMedia } from '@/store/dataSlice';
-import SkeletonHeader from '@/components/atoms/skeletonHeader';
-import SkeletonMedia from '@/components/atoms/skeletonMedia';
+import SkeletonHeader from '@/components/atoms/SkeletonHeader';
+import SkeletonMedia from '@/components/atoms/SkeletonMedia';
 import { useAuth } from '@/context/auth';
 
 export const MainLayout: React.FC<PropsWithChildren> = ({ children }) => {
