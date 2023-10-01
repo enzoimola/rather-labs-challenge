@@ -11,7 +11,7 @@ const TableCardDetail: React.FC<Array<ICastMember>> = (dataTable) => {
         <Table.Tr key={row.id}>
             <Table.Td>
                 <Group gap="sm">
-                    <Avatar size={26} src={`http://image.tmdb.org/t/p/w500/${row.profilePath}`} radius={26} />
+                    <Avatar size={26} src={`${process.env.NEXT_PUBLIC_TMDB_IMAGE_URL}${row.profilePath}`} radius={26} />
                     <Text size="sm" fw={500}>
                         {row.name}
                     </Text>
@@ -25,7 +25,7 @@ const TableCardDetail: React.FC<Array<ICastMember>> = (dataTable) => {
 
     return (
         <ScrollArea h={300} onScrollPositionChange={({ y }) => setScrolled(y !== 0)}>
-            <Table miw={700} className={classes.stickyTable}>
+            <Table miw={700} className={classes.stickyTable} striped highlightOnHover>
                 <Table.Thead className={cx(classes.header, { [classes.scrolled]: scrolled })}>
                     <Table.Tr>
                         <Table.Th>Name</Table.Th>

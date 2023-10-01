@@ -43,20 +43,18 @@ export const FETCH_FAVORITES_MEDIA = (uid) => gql`
     }
 `;
 
-export const FETCH_USER_LOGGED = (uid) => gql`
-    query {
-     getUser(uid:"${uid}") {
-        email,
-        uid
-      }
+export const CREATE_USER_MUTATION = `
+   mutation CreateUser($input: CreateUserInput!) {
+    createUser(input: $input) {
+      email
     }
+  }
 `;
 
-export const FETCH_URL_MEDIA = gql`
-    query {
-      getURLMedia {
-        id
-        homepage
-      }
+export const ADD_FAVORITE_MEDIA_MUTATION = `
+    mutation AddFavMedia($media: FavMedia!) { 
+        addFavMedia(media: $media) { 
+            success 
+        } 
     }
 `;

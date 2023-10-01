@@ -76,6 +76,7 @@ const MediaDetail: React.FC<DetailType> = ({ detailMedia }) => {
               voteAverage={media?.voteAverage}
               name={media?.name}
               actors={media?.actors}
+              homepage={media?.homepage}
             />
         </Flex>
     );

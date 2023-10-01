@@ -10,18 +10,18 @@ import {
 import React, { useRef, useState } from 'react';
 import { useRouter } from 'next/router';
 import { notifications } from '@mantine/notifications';
+import { useMutation } from '@apollo/client';
 import classes from '../login/Login.module.scss';
 import { useAuth } from '@/context/auth';
 
-const Login = () => {
-        const emailRef = useRef<HTMLInputElement>();
+const Register: React.FC = () => {
+    const emailRef = useRef<HTMLInputElement>();
         const passwordRef = useRef<HTMLInputElement>();
         const [error, setError] = useState('');
         const [userRegistered, setUserRegistered] = useState<boolean>(false);
         const [loadingRegisterBtn, setRegisterLoadingBtn] = useState<boolean>(false);
         const router = useRouter();
         const { signup } = useAuth();
-
         const checkValidEmail = (emailInput: string) => /\S+@\S+\.\S+/.test(emailInput);
         const [loadingBackBtn, setBackLoadingBtn] = useState(false);
         const onBackHandler = () => {
@@ -34,7 +34,7 @@ const Login = () => {
             const { current: password } = passwordRef;
             if (email?.value && password?.value) {
                 try {
-                    await signup(email.value, password.value);
+                    const input = await signup(email.value, password.value);
                     setUserRegistered(true);
                 } catch (e) {
                     notifications.show({
@@ -129,4 +129,4 @@ const Login = () => {
 
                 </Container>);
     };
-export default Login;
+export default Register;

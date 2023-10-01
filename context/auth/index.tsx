@@ -5,12 +5,11 @@ import {
     onAuthStateChanged,
     signOut, UserCredential,
 } from 'firebase/auth';
-import { useDispatch } from 'react-redux';
 import { useRouter } from 'next/router';
 import { auth } from '../../firebase.js';
-import { getUser, createUser } from '@/services/media/media.service';
-import { setUserId } from '@/store/dataSlice';
 import NotAllowedAccess from '@/components/atoms/NotAllowedAccess';
+import { IUser } from '@/models/interfaces/user/user.interface';
+import { createUser } from '@/services/media/media.service';
 
 export const authContext = createContext();
 
@@ -22,14 +21,13 @@ export const useAuth = () => {
 
 export const AuthProvider = ({ children }) => {
     const [userLogged, setUserLogged] = useState(null);
-    const dispatch = useDispatch();
 
     useEffect(() => {
         onAuthStateChanged(auth, currentUser => {
             setUserLogged(currentUser);
         });
     }, []);
-    const signup = async (email: string, password: string): Promise<void> => {
+    const signup = async (email: string, password: string): Promise<IUser> => {
         try {
             const userResp: UserCredential = await createUserWithEmailAndPassword(
                 auth,
@@ -37,6 +35,8 @@ export const AuthProvider = ({ children }) => {
                 password
             );
             await createUser({ email, password, uid: userResp.user.uid });
+
+            return { email, password, uid: userResp.user.uid };
         } catch (e: unknown) {
             throw new Error('This email is already taken');
         }
@@ -47,9 +47,6 @@ export const AuthProvider = ({ children }) => {
             // eslint-disable-next-line max-len
             const { user }: UserCredential = await signInWithEmailAndPassword(auth, email, password);
             localStorage.setItem('uid', user.uid);
-            dispatch(setUserId(user.uid));
-
-            return await getUser(user.uid);
         } catch (e: unknown) {
             console.log(e);
             throw new Error('Invalid credentials');

@@ -6,6 +6,7 @@ export interface IMediaDetail {
     voteAverage: number;
     overview: string;
     tagline: string;
+    homepage: string;
     actors: Array<ICastMember>;
 }
 

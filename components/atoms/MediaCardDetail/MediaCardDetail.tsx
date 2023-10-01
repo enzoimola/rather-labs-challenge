@@ -1,7 +1,7 @@
-import { Card, Image, Text, Group, Badge, Button, ActionIcon } from '@mantine/core';
+import { Card, Image, Text, Group, Badge, Button, Anchor } from '@mantine/core';
 import React, { useEffect, useState } from 'react';
 import moment from 'moment/moment';
-import { IconHeart, IconHeartFilled, IconStar } from '@tabler/icons-react';
+import { IconStar } from '@tabler/icons-react';
 import { useDispatch, useSelector } from 'react-redux';
 import { UserCredential } from 'firebase/auth';
 import classes from './MediaCardDetail.module.scss';
@@ -13,22 +13,28 @@ import { useAuth } from '@/context/auth';
 
 export const MediaCardDetail =
     ({ id, name, releaseDate, posterPath, overview,
-        voteAverage, tagline, actors }) => {
-    const imageURL = `http://image.tmdb.org/t/p/w500/${posterPath}`;
+        homepage, voteAverage, tagline, actors }) => {
+    const imageURL = `${process.env.NEXT_PUBLIC_TMDB_IMAGE_URL}${posterPath}`;
 
     const icon = <IconStar style={{ width: 20, height: 20 }} />;
     const voteAvg = voteAverage.toFixed(1);
     const [setFav, setIsMarkAsFav] = useState<boolean>(false);
+    const [loadingFavBtn, setLoadingFavBtn] = useState<boolean>(true);
     const dispatch = useDispatch();
     const favourites = useSelector(selectFavourites);
     const { userLogged } : UserCredential = useAuth();
 
     useEffect(() => {
+        if (favourites.length === 0) {
+            setLoadingFavBtn(false);
+            return;
+        }
         const isFav = favourites.some(md => md.id === id);
         if (isFav) {
             setIsMarkAsFav(true);
+            setLoadingFavBtn(false);
         }
-    }, []);
+    }, [favourites]);
 
     const onFavoriteHandler = async () => {
         const body: IFavMedia = {
@@ -84,10 +90,13 @@ export const MediaCardDetail =
                     {overview}
                 </Text>
                 <Group />
-                <Button color="red" variant="outline" radius="md" onClick={onFavoriteHandler}>
+                <Button color="red" variant="outline" radius="md" onClick={onFavoriteHandler} loading={loadingFavBtn}>
                     {!setFav && <Text>Add to favorite</Text>}
                     {setFav && <Text>Remove from favorite</Text>}
                 </Button>
+                {homepage && <Anchor href={homepage} target="_blank" mt="10">
+                                {homepage}
+                             </Anchor>}
                 <Text mt="xl" mb="md" ta="center" c="dimmed" fz="md" fw={700}>
                     Cast members
                 </Text>
