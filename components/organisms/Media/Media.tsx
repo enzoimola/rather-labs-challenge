@@ -13,17 +13,24 @@ export const Media: React.FC = () => {
     const [noDataFound, setNoDataFound] = useState<boolean>(false);
     const mediaFetched = useSelector(selectMedia);
 
-    const getMovies = (search?: string) => {
+    const filterMedia = (mediaSearch: Array<IMedia>, keySearch: string) =>
+        mediaSearch.filter((md) => md.name.toLowerCase().includes(keySearch.toLowerCase()));
+
+    const getMedia = (backspacePressed: boolean, search?: string) => {
         if (!search) {
             setMedia(mediaFetched);
             return;
         }
-        const result = media.filter((md) => md.name.toLowerCase().includes(search.toLowerCase()));
+
+       const result = search && backspacePressed ?
+           filterMedia(mediaFetched, search) : filterMedia(media, search);
         setNoDataFound(result.length === 0);
         setMedia(result);
     };
 
-    const onChange = (search: string) => getMovies(search);
+    const onChange = (backspacePressed: boolean, search: string) => {
+        getMedia(backspacePressed, search);
+    };
 
     useEffect(() => {
         setMedia(mediaFetched);

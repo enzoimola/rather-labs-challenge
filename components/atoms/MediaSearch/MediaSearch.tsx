@@ -1,7 +1,7 @@
 'use client';
 
 import { TextInput } from '@mantine/core';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDebouncedState } from '@mantine/hooks';
 
 type MediaSearchType = {
@@ -9,9 +9,10 @@ type MediaSearchType = {
 };
 export const MediaSearch: React.FC<MediaSearchType> = ({ onChange }) => {
     const [search, setSearch] = useDebouncedState('', 500);
+    const [backspacePressed, setBackspacePressed] = useState<boolean>(false);
 
     useEffect(() => {
-        onChange(search);
+        onChange(backspacePressed, search);
     }, [search]);
 
     return (
@@ -21,5 +22,6 @@ export const MediaSearch: React.FC<MediaSearchType> = ({ onChange }) => {
           size="md"
           placeholder="Find Movies and TV Shows by their titles"
           onChange={(e) => setSearch(e.target.value)}
+          onKeyDown={(e) => setBackspacePressed(e.key === 'Backspace')}
         />);
 };

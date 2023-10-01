@@ -47,9 +47,9 @@ const MediaDetail: React.FC<DetailType> = ({ detailMedia }) => {
     if (!media?.id) {
         return (
             <PageNoData
-              text="No films or TV shows matching."
-              title={"It seems we're in the Upside Down."}
-              returnBack={false}
+              text="It seems that the movie or TV show does not exist."
+              title="No film or TV show matching."
+              returnBack
             />
         );
     }

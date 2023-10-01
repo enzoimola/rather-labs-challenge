@@ -58,3 +58,11 @@ export const ADD_FAVORITE_MEDIA_MUTATION = `
         } 
     }
 `;
+
+export const ADD_FAVORITE_MEDIA_MUTATION_GQL = gql`
+    mutation AddFavMedia($media: FavMedia!) { 
+        addFavMedia(media: $media) { 
+            success 
+        } 
+    }
+`;

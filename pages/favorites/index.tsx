@@ -7,7 +7,7 @@ const Favorites: React.FC = () => (
     <MainLayout>
         <Flex direction="column" gap="sm" justify="center" maw={960} mx="auto">
             <Title align="center">Favorite Media</Title>
-            <Text align="center"> Here, you can find a list of their favorite movies and TV show</Text>
+            <Text align="center"> Here, you can find a list of your favorite movies and TV show</Text>
             <FavoriteWrapper />
         </Flex>
     </MainLayout>

@@ -11,7 +11,8 @@ const TableCardDetail: React.FC<Array<ICastMember>> = (dataTable) => {
         <Table.Tr key={row.id}>
             <Table.Td>
                 <Group gap="sm">
-                    <Avatar size={26} src={`${process.env.NEXT_PUBLIC_TMDB_IMAGE_URL}${row.profilePath}`} radius={26} />
+                    {row.profilePath && <Avatar size={26} src={`${process.env.NEXT_PUBLIC_TMDB_IMAGE_URL}${row.profilePath}`} radius={26} />}
+                    {!row.profilePath && <Avatar size={26} radius={26} />}
                     <Text size="sm" fw={500}>
                         {row.name}
                     </Text>

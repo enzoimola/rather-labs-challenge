@@ -8,11 +8,12 @@ import { wrapper } from '@/store/store';
 import { AuthProvider, ProtectRoute } from '@/context/auth';
 import { ErrorBoundary } from '@/components/atoms/ErrorBoundary/ErrorBoundary';
 import { createApolloClient } from '@/apollo-client';
+import '@mantine/notifications/styles.css';
 
 const App = ({ Component, pageProps }: AppProps) => (
       <ErrorBoundary>
           <MantineProvider theme="light">
-              <Notifications position="bottom-right" />
+              <Notifications position="top-right" />
 
               <Head>
                   <title>Challenge</title>
