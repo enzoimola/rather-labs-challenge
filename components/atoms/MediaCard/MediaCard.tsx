@@ -1,73 +1,105 @@
-import { IconHeart } from '@tabler/icons-react';
+import { IconHeart, IconStar, IconHeartFilled } from '@tabler/icons-react';
 import { Card, Image, Text, Group, Badge, Button, ActionIcon } from '@mantine/core';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import moment from 'moment';
+import { useRouter } from 'next/router';
+import { useDispatch, useSelector } from 'react-redux';
+import { UserCredential } from 'firebase/auth';
 import classes from './MediaCard.module.scss';
+import { IMedia } from '@/models/interfaces/media.interface';
+import { saveFavorite } from '@/services/media/media.service';
+import { IFavMedia } from '@/models/interfaces/favMedia.interface';
+import { onFavouredMedia, selectFavourites } from '@/store/dataSlice';
+import { useAuth } from '@/context/auth';
 
-const mockdata = {
-    image:
-        'https://images.unsplash.com/photo-1437719417032-8595fd9e9dc6?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=600&q=80',
-    title: 'Verudela Beach',
-    country: 'Croatia',
-    description:
-        'Completely renovated for the season 2020, Arena Verudela Bech Apartments are fully equipped and modernly furnished 4-star self-service apartments located on the Adriatic coastline by one of the most beautiful beaches in Pula.',
-    badges: [
-        { emoji: '☀️', label: 'Sunny weather' },
-        { emoji: '🦓', label: 'Onsite zoo' },
-        { emoji: '🌊', label: 'Sea' },
-        { emoji: '🌲', label: 'Nature' },
-        { emoji: '🤽', label: 'Water sports' },
-    ],
-};
+export const MediaCard: React.FC<IMedia> = (
+    { id, name, releaseDate, posterPath, voteAverage, isMovie }) => {
+    const [loadingBtn, setLoadingBtn] = useState<boolean>(false);
+    const [setFav, setIsMarkAsFav] = useState<boolean>(false);
+    const router = useRouter();
+    const imageURL = posterPath ? `${process.env.NEXT_PUBLIC_TMDB_IMAGE_URL}${posterPath}` : `${process.env.NEXT_PUBLIC_IMAGE_NOT_FOUND}`;
+    const favourites = useSelector(selectFavourites);
+    const dispatch = useDispatch();
+    const { userLogged } : UserCredential = useAuth();
 
-type MediaCardType = {
-    title: string,
-    // image?: string
-    // show: boolean
-};
-export const MediaCard: React.FC<MediaCardType> = ({ title }) => {
-    const { image, description, country, badges } = mockdata;
-    const features = badges.map((badge) => (
-        <Badge variant="light" key={badge.label} leftSection={badge.emoji}>
-            {badge.label}
-        </Badge>
-    ));
+    useEffect(() => {
+        const isFav = favourites.some(md => md.id === id);
+        if (isFav) {
+            setIsMarkAsFav(true);
+        }
+    }, []);
+
+    const onShowDetailsHandler = (e) => {
+        e.preventDefault();
+        setLoadingBtn(true);
+        const isMovieParam = isMovie ? 'media' : 'tv-show';
+
+        router.push({ pathname: '/[isMovieParam]/[id]', query: { id, isMovieParam } });
+    };
+
+    const checkMainPage = router.pathname === ('/');
+
+    const icon = <IconStar style={{ width: 20, height: 20 }} />;
+    const voteAvg = !voteAverage ? 0 : voteAverage.toFixed(1);
+
+    const onFavoriteHandler = async () => {
+        const body: IFavMedia = {
+            id,
+            uid: userLogged.uid,
+            isFav: setFav,
+        };
+        await saveFavorite(body);
+
+        const newFav = { id, name, releaseDate, posterPath, voteAverage };
+        dispatch(onFavouredMedia(newFav));
+
+        setIsMarkAsFav(!setFav);
+    };
 
     return (
         <Card withBorder radius="md" p="md" className={classes.card}>
             <Card.Section>
-                <Image src={image} alt={title} height={180} />
+                <Image src={imageURL} alt={name} height={180} pos="absolute" className={classes.bgImage} />
+                <Image src={imageURL} alt={name} height={180} className={classes.image} />
             </Card.Section>
 
             <Card.Section className={classes.section} mt="md">
-                <Group justify="apart">
-                    <Text fz="lg" fw={500}>
-                        {title}
+                <Group justify="center" className={classes.sectionGroup}>
+                    <Text fz="lg" justify="center" fw={500} className={classes.title}>
+                        {name}
                     </Text>
-                    <Badge size="sm" variant="light">
-                        {country}
-                    </Badge>
                 </Group>
-                <Text fz="sm" mt="xs">
-                    {description}
-                </Text>
             </Card.Section>
 
             <Card.Section className={classes.section}>
-                <Text mt="md" className={classes.label} c="dimmed">
-                    Perfect for you, if you enjoy
-                </Text>
-                <Group gap={7} mt={5}>
-                    {features}
+
+                <Group justify="space-between" mt={20}>
+
+                        <Badge
+                          color="yellow"
+                          variant="filled"
+                          size="lg"
+                          leftSection={icon}
+                        >
+                            <Text fz="md" fw={700}>
+                            {voteAvg}
+                            </Text>
+                        </Badge>
+
+                    <Badge size="lg" variant="light">
+                        {moment(releaseDate).format('MMM Do YY')}
+                    </Badge>
                 </Group>
             </Card.Section>
 
             <Group mt="xs">
-                <Button radius="md" style={{ flex: 1 }}>
+                <Button variant="outline" radius="md" style={{ flex: 1 }} onClick={onShowDetailsHandler} loading={loadingBtn}>
                     Show details
                 </Button>
-                <ActionIcon variant="default" radius="md" size={36}>
-                    <IconHeart className={classes.like} stroke={1.5} />
-                </ActionIcon>
+                {!checkMainPage && <ActionIcon variant="default" radius="md" size={36} onClick={onFavoriteHandler}>
+                    {!setFav && <IconHeart className={classes.like} stroke={1.5} />}
+                    {setFav && <IconHeartFilled className={classes.like} stroke={1.5} />}
+                                   </ActionIcon>}
             </Group>
         </Card>
     );

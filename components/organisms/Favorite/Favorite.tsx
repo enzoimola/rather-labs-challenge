@@ -3,27 +3,26 @@ import { useSelector } from 'react-redux';
 import { MediaSearch } from '@/components/atoms/MediaSearch/MediaSearch';
 import { MediaGrid } from '@/components/molecules/MediaGrid/MediaGrid';
 import { IMedia } from '@/models/interfaces/media.interface';
-import { selectMedia } from '@/store/dataSlice';
 import SkeletonMedia from '@/components/atoms/SkeletonMedia';
 import { PageNoData } from '@/components/atoms/PageNoData/PageNoData';
 
-export const Media: React.FC = () => {
+export const FavoriteWrapper: React.FC = () => {
     const [media, setMedia] = useState<Array<IMedia>>([]);
+    const mediaFetched = useSelector((data) => data);
     const [loadingGrid, setLoadingGrid] = useState<boolean>(true);
     const [noDataFound, setNoDataFound] = useState<boolean>(false);
-    const mediaFetched = useSelector(selectMedia);
 
     const filterMedia = (mediaSearch: Array<IMedia>, keySearch: string) =>
         mediaSearch.filter((md) => md.name.toLowerCase().includes(keySearch.toLowerCase()));
 
     const getMedia = (backspacePressed: boolean, search?: string) => {
         if (!search) {
-            setMedia(mediaFetched);
+            setMedia(mediaFetched.data.favorites);
+            setNoDataFound(false);
             return;
         }
-
-       const result = search && backspacePressed ?
-           filterMedia(mediaFetched, search) : filterMedia(media, search);
+        const result = search && backspacePressed ?
+            filterMedia(mediaFetched.data.favorites, search) : filterMedia(media, search);
         setNoDataFound(result.length === 0);
         setMedia(result);
     };
@@ -33,7 +32,7 @@ export const Media: React.FC = () => {
     };
 
     useEffect(() => {
-        setMedia(mediaFetched);
+        setMedia(mediaFetched.data.favorites);
         setLoadingGrid(false);
     }, [mediaFetched]);
 
@@ -47,7 +46,6 @@ export const Media: React.FC = () => {
               title={"It seems we're in the Upside Down."}
               returnBack={false}
             />}
-
         </>
     );
 };
