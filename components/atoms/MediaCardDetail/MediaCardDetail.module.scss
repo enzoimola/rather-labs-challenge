@@ -1,0 +1,44 @@
+.card {
+  background-color: var(--mantine-color-body);
+}
+
+.sectionCard .imageCard {
+  height: 300px;
+  height: 300px;
+
+}
+
+.bgImage {
+  filter: blur(5px);
+  height: 300px;
+}
+
+.image {
+  object-fit: contain !important;
+  z-index: 10;
+  position: relative;
+  height: 350px;
+}
+
+.tableWrapper {
+  margin: var(--mantine-spacing-lg);
+}
+
+.titleWrapper {
+  font-family: Greycliff CF, var(--mantine-font-family);
+  line-height: 1;
+  display: inline-grid;
+  justify-content: center;
+}
+
+.ratingIcon {
+  align-items: center;
+  display: flex;
+}
+
+
+@media screen and (max-device-width: 500px) {
+  .sectionCard .imageCard {
+    height: 200px;
+  }
+}

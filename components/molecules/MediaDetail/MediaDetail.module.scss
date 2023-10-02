@@ -1,0 +1,9 @@
+.backHome {
+  width: 120px;
+}
+
+@media screen and (max-device-width: 500px) {
+  .backHome {
+    width: 100%;
+  }
+}

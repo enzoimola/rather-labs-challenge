@@ -1,0 +1,32 @@
+.header {
+  position: sticky;
+  top: 0;
+  background-color: var(--mantine-color-body);
+  transition: box-shadow 150ms ease;
+
+  &::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-bottom: 1px solid
+    var(--mantine-color-gray-2), var(--mantine-color-dark-3);
+  }
+}
+
+.stickyTable {
+  overflow: auto; /* Enable scrolling for the table body */
+  max-height: 400px;
+}
+
+.stickyTable thead {
+  position: sticky;
+  top: 0;
+  background-color: #fff; /* Set the background color for the sticky header */
+  z-index: 1; /* Ensure it's above the table body content */
+}
+
+.scrolled {
+  box-shadow: var(--mantine-shadow-sm);
+}
