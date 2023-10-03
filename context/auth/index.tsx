@@ -19,7 +19,7 @@ import NotAllowedAccess from '@/components/atoms/NotAllowedAccess';
 type AuthContextType = {
     isAuthenticated: boolean,
     signup: (email: string, password: string) => Promise<string>,
-    login: (email: string, password: string) => void,
+    login: (email: string, password: string) => Promise<string>,
     userLogged: User | null,
     logout: () => void,
 };
@@ -27,7 +27,7 @@ type AuthContextType = {
 export const authContext = createContext<AuthContextType>({
     isAuthenticated: false,
     signup: async () => '',
-    login: () => {},
+    login: async () => '',
     userLogged: null,
     logout: () => {},
 });
@@ -59,11 +59,12 @@ export const AuthProvider: React.FC<PropsWithChildren> = ({ children }) => {
         }
     };
 
-    const login = async (email: string, password: string): Promise<void> => {
+    const login = async (email: string, password: string): Promise<string> => {
         try {
             // eslint-disable-next-line max-len
             const { user }: UserCredential = await signInWithEmailAndPassword(auth, email, password);
             localStorage.setItem('uid', user.uid);
+            return user.uid;
         } catch (e: unknown) {
             console.log(e);
             throw new Error('Invalid credentials');

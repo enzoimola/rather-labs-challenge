@@ -1,12 +1,12 @@
 import { AppShell } from '@mantine/core';
 
 import React, { PropsWithChildren, useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
-import { ApolloQueryResult, NoInfer, QueryResult, useQuery } from '@apollo/client';
+import { useDispatch, useSelector } from 'react-redux';
+import { QueryResult, useQuery } from '@apollo/client';
 import { ApolloError } from '@apollo/client/errors';
 import { Header } from '@/components/molecules/Header/Header';
 import { FETCH_FAVORITES_MEDIA, FETCH_MEDIA } from '@/graphql/queries';
-import { setFavoritesMedia, setMedia } from '@/store/dataSlice';
+import { selectFavourites, selectUserId, setFavoritesMedia, setMedia } from '@/store/dataSlice';
 import SkeletonHeader from '@/components/atoms/SkeletonHeader';
 import { PageNoData } from '@/components/atoms/PageNoData/PageNoData';
 import { IMedia } from '@/models/interfaces/media/media.interface';
@@ -19,6 +19,8 @@ type GetFavoritesType = {
 export const MainLayout: React.FC<PropsWithChildren> = ({ children }) => {
     const dispatch = useDispatch();
     const [loadingFavs, setLoadingFavs] = useState<boolean>(true);
+    const favouritesStorage = useSelector(selectFavourites);
+    const userUid = useSelector(selectUserId);
 
     const { data: media, loading: loadingMedia, error: errorMedia }:
         QueryResult<{ media: Array<IMedia>, loadingMedia: boolean, error: ApolloError }> =
@@ -30,7 +32,7 @@ export const MainLayout: React.FC<PropsWithChildren> = ({ children }) => {
 
     const { data: favorites, loading: loadingFav, error: errorFavorites }:
         QueryResult<{ favorites: GetFavoritesType, loadingFav: boolean, error: ApolloError }> =
-            useQuery(FETCH_FAVORITES_MEDIA(localStorage.getItem('uid')));
+            useQuery(FETCH_FAVORITES_MEDIA(userUid || localStorage!.getItem('uid')));
 
     useEffect(() => {
         if (!favorites || !media) return;
@@ -44,6 +46,10 @@ export const MainLayout: React.FC<PropsWithChildren> = ({ children }) => {
         dispatch(setMedia(media.media));
         dispatch(setFavoritesMedia(commonItems));
     }, [loadingFav || loadingMedia]);
+
+    useEffect(() => {
+        dispatch(setFavoritesMedia(favouritesStorage));
+    }, [favouritesStorage]);
 
     if (errorMedia || errorFavorites) {
         return (<PageNoData
