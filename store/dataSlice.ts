@@ -5,13 +5,11 @@ import { IMedia } from '@/models/interfaces/media/media.interface';
 
 export interface DataStateType {
     media: Array<IMedia>;
-    userId: string;
     favorites: Array<IMedia>
 }
 
 const initialState: DataStateType = {
     media: [] as Array<IMedia>,
-    userId: '',
     favorites: [],
 };
 
@@ -19,10 +17,6 @@ export const dataSlice = createSlice({
     name: 'data',
     initialState,
     reducers: {
-        setUserId(state, { payload }: { payload: string }) {
-            // eslint-disable-next-line no-param-reassign
-            state.userId = payload;
-        },
         setMedia(state, { payload }: { payload: Array<IMedia> }) {
             // eslint-disable-next-line no-param-reassign
             state.media = payload;
@@ -52,8 +46,7 @@ export const dataSlice = createSlice({
     },
 });
 
-export const { setMedia, setUserId, setFavoritesMedia, onFavouredMedia } = dataSlice.actions;
-export const selectUserId = (state: AppState) => state.data.userId;
+export const { setMedia, setFavoritesMedia, onFavouredMedia } = dataSlice.actions;
 export const selectMedia = (state: AppState) => state.data.media || [];
 export const selectFavourites = (state: AppState) => state.data.favorites || [];
 

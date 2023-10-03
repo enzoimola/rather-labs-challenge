@@ -63,7 +63,7 @@ export const MediaCard: React.FC<IMedia> =
         } catch (e) {
             notifications.show({
                 title: 'Error',
-                message: 'Failed to add to favorites, please try again',
+                message: 'Failed to save/delete favorite item, please try again',
             });
         }
     };

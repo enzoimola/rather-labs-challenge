@@ -15,10 +15,12 @@ export const getStaticPaths: GetStaticPaths = async () => ({
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
     try {
+        if (!params) return { props: { detailMedia: {} } };
         const client = createApolloClient;
         const movieParam = params?.type === 'media';
+        const idMediaParam: string = params ? String(params?.idMedia) : '';
         const { data } = await client.query({
-            query: FETCH_DETAIL_MEDIA(params?.idMedia, movieParam),
+            query: FETCH_DETAIL_MEDIA(idMediaParam, movieParam),
         });
 
         return {

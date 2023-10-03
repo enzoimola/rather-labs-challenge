@@ -17,17 +17,17 @@ import { auth } from '../../firebase.js';
 import NotAllowedAccess from '@/components/atoms/NotAllowedAccess';
 
 type AuthContextType = {
-    isAuthenticated: boolean,
+    isLoggedIn: boolean;
     signup: (email: string, password: string) => Promise<string>,
-    login: (email: string, password: string) => Promise<string>,
+    login: (email: string, password: string) => void,
     userLogged: User | null,
     logout: () => void,
 };
 
 export const authContext = createContext<AuthContextType>({
-    isAuthenticated: false,
+    isLoggedIn: true,
     signup: async () => '',
-    login: async () => '',
+    login: async () => {},
     userLogged: null,
     logout: () => {},
 });
@@ -40,6 +40,14 @@ export const useAuth = () => {
 
 export const AuthProvider: React.FC<PropsWithChildren> = ({ children }) => {
     const [userLogged, setUserLogged] = useState<User | null>(null);
+    const [isLoggedIn, setIsLoggedIn] = useState<boolean>(true);
+
+    useEffect(() => {
+        if (typeof window === 'undefined') {
+            return;
+        }
+        setIsLoggedIn(Boolean(localStorage.getItem('uid')));
+    }, [setIsLoggedIn]);
 
     useEffect(() => {
         onAuthStateChanged(auth, currentUser => {
@@ -59,12 +67,12 @@ export const AuthProvider: React.FC<PropsWithChildren> = ({ children }) => {
         }
     };
 
-    const login = async (email: string, password: string): Promise<string> => {
+    const login = async (email: string, password: string): Promise<void> => {
         try {
             // eslint-disable-next-line max-len
             const { user }: UserCredential = await signInWithEmailAndPassword(auth, email, password);
             localStorage.setItem('uid', user.uid);
-            return user.uid;
+            setIsLoggedIn(true);
         } catch (e: unknown) {
             console.log(e);
             throw new Error('Invalid credentials');
@@ -76,11 +84,9 @@ export const AuthProvider: React.FC<PropsWithChildren> = ({ children }) => {
         localStorage.removeItem('uid');
     };
 
-    const isAuthenticated: boolean = !!userLogged;
-
     return (
             <authContext.Provider
-              value={{ isAuthenticated, signup, login, userLogged, logout }}
+              value={{ isLoggedIn, signup, login, userLogged, logout }}
             >
                 {children}
             </authContext.Provider>
@@ -88,9 +94,10 @@ export const AuthProvider: React.FC<PropsWithChildren> = ({ children }) => {
 };
 
 export const ProtectRoute: React.FC<{ children: ReactElement }> = ({ children }) => {
-    const { isAuthenticated } = useAuth();
+    const { isLoggedIn } = useAuth();
     const router = useRouter();
-    if ((!isAuthenticated && router.pathname !== '/auth/login' && router.pathname !== '/auth/register')) {
+
+    if ((!isLoggedIn && router.pathname !== '/auth/login' && router.pathname !== '/auth/register')) {
         return <NotAllowedAccess />;
     }
     return <>{children}</>;

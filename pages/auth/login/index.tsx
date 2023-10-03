@@ -10,13 +10,10 @@ import {
 import React, { useRef, useState } from 'react';
 import { useRouter } from 'next/router';
 import { notifications } from '@mantine/notifications';
-import { useDispatch } from 'react-redux';
 import classes from './Login.module.scss';
 import { useAuth } from '@/context/auth';
-import { setUserId } from '@/store/dataSlice';
 
 const Login: React.FC = () => {
-    const dispatch = useDispatch();
     const emailRef = useRef<HTMLInputElement | null>(null);
     const passwordRef = useRef<HTMLInputElement | null>(null);
     const [error, setError] = useState('');
@@ -41,8 +38,7 @@ const Login: React.FC = () => {
         if (checkedEmail && checkedPassword && email && password) {
             setLoadingBtn(true);
             try {
-                const uid = await login(email.value, password.value);
-                dispatch((setUserId(uid)));
+                await login(email.value, password.value);
 
                 router.push({ pathname: '/' }).then();
             } catch (err: unknown) {
