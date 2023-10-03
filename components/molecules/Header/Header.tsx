@@ -30,7 +30,7 @@ export const Header = () => {
         setLoadingLogoutBtn(true);
         try {
             await logout();
-            router.replace('/auth/login').then();
+            router.replace('/').then();
         } catch (e: any) {
             notifications.show({
                 title: 'Error',
