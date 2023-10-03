@@ -1,11 +1,12 @@
-import { Button, Container, Flex, Skeleton } from '@mantine/core';
+import { Button, Flex } from '@mantine/core';
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { MediaCardDetail } from '@/components/atoms/MediaCardDetail/MediaCardDetail';
-import { IMediaDetail } from '@/models/interfaces/mediaDetail.interface';
+import { IMediaDetail } from '@/models/interfaces/media/mediaDetail.interface';
 import classes from './MediaDetail.module.scss';
 import { DetailType } from '@/pages/[type]/[idMedia]';
 import { PageNoData } from '@/components/atoms/PageNoData/PageNoData';
+import SkeletonMedia from '@/components/atoms/SkeletonMedia';
 
 const MediaDetail: React.FC<DetailType> = ({ detailMedia }) => {
     const [media, setMedia] = useState<IMediaDetail>();
@@ -23,25 +24,14 @@ const MediaDetail: React.FC<DetailType> = ({ detailMedia }) => {
         setMediaDetail(detailMedia);
     }, [detailMedia]);
 
-    const onBackHandler = (e) => {
+    const onBackHandler = (e: React.MouseEvent<HTMLElement>) => {
         e.preventDefault();
         setBackLoadingBtn(true);
         router.push('/');
     };
 
     if (loadingPage) {
-        return (
-            <>
-                <Container m={10} direction="column" gap="sm" justify="center" w={960} mx="auto">
-                    <Skeleton height={300} radius="xl" />
-                    <Skeleton height={50} circle mb="xl" mt="xl" />
-                    <Skeleton height={20} radius="xl" />
-                    <Skeleton height={20} mt={6} radius="xl" />
-                    <Skeleton height={20} mt={6} radius="xl" />
-                    <Skeleton height={20} mt={6} radius="xl" width="70%" />
-                </Container>
-            </>
-        );
+        return (<SkeletonMedia />);
     }
 
     if (!media?.id) {

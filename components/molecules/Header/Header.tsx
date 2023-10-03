@@ -11,27 +11,31 @@ import {
 import { useDisclosure } from '@mantine/hooks';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
+import { notifications } from '@mantine/notifications';
 import classes from './Header.module.scss';
 import { useAuth } from '@/context/auth';
 import { selectFavourites } from '@/store/dataSlice';
-import { IFavMedia } from '@/models/interfaces/favMedia.interface';
+import { IMedia } from '@/models/interfaces/media/media.interface';
 
 export const Header = () => {
     const [drawerOpened, { toggle: toggleDrawer, close: closeDrawer }] = useDisclosure(false);
     const router = useRouter();
     const [loadingLogoutBtn, setLoadingLogoutBtn] = useState(false);
     const { logout } = useAuth();
-    const favs: Array<IFavMedia> = useSelector(selectFavourites);
+    const favs: Array<IMedia> = useSelector(selectFavourites);
 
     const onLogoutHandler = async () => {
         setLoadingLogoutBtn(true);
         try {
             await logout();
             router.replace('/auth/login').then();
-        } catch (e) {
-            console.log(e.message);
+        } catch (e: any) {
+            notifications.show({
+                title: 'Error',
+                message: 'Api fail, please try again',
+            });
         }
     };
 

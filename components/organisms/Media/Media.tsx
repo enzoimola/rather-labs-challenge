@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { MediaSearch } from '@/components/atoms/MediaSearch/MediaSearch';
 import { MediaGrid } from '@/components/molecules/MediaGrid/MediaGrid';
-import { IMedia } from '@/models/interfaces/media.interface';
+import { IMedia } from '@/models/interfaces/media/media.interface';
 import { selectMedia } from '@/store/dataSlice';
 import SkeletonMedia from '@/components/atoms/SkeletonMedia';
 import { PageNoData } from '@/components/atoms/PageNoData/PageNoData';

@@ -3,16 +3,16 @@ import React, { useEffect, useState } from 'react';
 import moment from 'moment/moment';
 import { IconStar } from '@tabler/icons-react';
 import { useDispatch, useSelector } from 'react-redux';
-import { UserCredential } from 'firebase/auth';
 import { notifications } from '@mantine/notifications';
 import classes from './MediaCardDetail.module.scss';
 import TableCardDetail from '@/components/atoms/TableCardDetail/TableCardDetail';
-import { IFavMedia } from '@/models/interfaces/favMedia.interface';
+import { IFavMedia } from '@/models/interfaces/media/favMedia.interface';
 import { saveFavorite } from '@/services/media/media.service';
 import { onFavouredMedia, selectFavourites } from '@/store/dataSlice';
 import { useAuth } from '@/context/auth';
+import { IMediaDetail } from '@/models/interfaces/media/mediaDetail.interface';
 
-export const MediaCardDetail =
+export const MediaCardDetail : React.FC<IMediaDetail> =
     ({ id, name, releaseDate, posterPath, overview,
         homepage, voteAverage, tagline, actors }) => {
     const imageURL = posterPath ? `${process.env.NEXT_PUBLIC_TMDB_IMAGE_URL}${posterPath}` : `${process.env.NEXT_PUBLIC_IMAGE_NOT_FOUND}`;
@@ -23,7 +23,7 @@ export const MediaCardDetail =
     const [loadingFavBtn, setLoadingFavBtn] = useState<boolean>(true);
     const dispatch = useDispatch();
     const favourites = useSelector(selectFavourites);
-    const { userLogged } : UserCredential = useAuth();
+    const { userLogged } = useAuth();
 
     useEffect(() => {
         if (favourites.length === 0) {
@@ -40,13 +40,14 @@ export const MediaCardDetail =
     const onFavoriteHandler = async () => {
         const body: IFavMedia = {
             id,
-            uid: userLogged.uid,
+            uid: userLogged!.uid,
             isFav: setFav,
         };
         try {
             await saveFavorite(body);
             const newFav = { id, name, releaseDate, posterPath, voteAverage };
             dispatch(onFavouredMedia(newFav));
+            debugger;
             setIsMarkAsFav(!setFav);
         } catch (e) {
             notifications.show({
@@ -59,10 +60,10 @@ export const MediaCardDetail =
     return (
         <>
             <Group className={classes.titleWrapper}>
-                <Text fz="xl" fw={700} justify="center" align="center">
+                <Text fz="xl" fw={700}>
                     {name}
                 </Text>
-                <Text fz="md" fw={500} justify="center" align="center">
+                <Text fz="md" fw={500}>
                     {tagline}
                 </Text>
             </Group>
@@ -106,7 +107,7 @@ export const MediaCardDetail =
                 <Text mt="xl" mb="md" ta="center" c="dimmed" fz="md" fw={700}>
                     Cast members
                 </Text>
-                <TableCardDetail data={actors} p={40} />
+                <TableCardDetail data={actors} />
             </Card>
         </>
     );

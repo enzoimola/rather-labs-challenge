@@ -2,7 +2,7 @@ import { Grid } from '@mantine/core';
 import React from 'react';
 import { useRouter } from 'next/router';
 import { MediaCard } from '@/components/atoms/MediaCard/MediaCard';
-import { IMedia } from '@/models/interfaces/media.interface';
+import { IMedia } from '@/models/interfaces/media/media.interface';
 
 type MediaGridType = {
     media: Array<IMedia>

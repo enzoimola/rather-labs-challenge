@@ -1,11 +1,9 @@
-'use client';
-
 import { TextInput } from '@mantine/core';
 import React, { useEffect, useState } from 'react';
 import { useDebouncedState } from '@mantine/hooks';
 
 type MediaSearchType = {
-    onChange: (search: string) => void
+    onChange: (backspacePressed: boolean, search: string) => void
 };
 export const MediaSearch: React.FC<MediaSearchType> = ({ onChange }) => {
     const [search, setSearch] = useDebouncedState('', 500);

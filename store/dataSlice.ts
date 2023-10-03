@@ -1,20 +1,17 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { HYDRATE } from 'next-redux-wrapper';
 import { AppState } from './store';
-import { IMedia } from '@/models/interfaces/media.interface';
-import { IFavMedia } from '@/models/interfaces/favMedia.interface';
+import { IMedia } from '@/models/interfaces/media/media.interface';
 
-export interface DataState {
+export interface DataStateType {
     media: Array<IMedia>;
     userId: string;
-    mediaSelected: number;
-    favorites: Array<IFavMedia>
+    favorites: Array<IMedia>
 }
 
-const initialState: DataState = {
+const initialState: DataStateType = {
     media: [] as Array<IMedia>,
-    userId: null,
-    mediaSelected: null,
+    userId: '',
     favorites: [],
 };
 
@@ -22,7 +19,7 @@ export const dataSlice = createSlice({
     name: 'data',
     initialState,
     reducers: {
-        setUserId(state, { payload }: { payload: Array<IMedia> }) {
+        setUserId(state, { payload }: { payload: string }) {
             // eslint-disable-next-line no-param-reassign
             state.userId = payload;
         },
