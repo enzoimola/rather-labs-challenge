@@ -2,11 +2,13 @@ import cx from 'clsx';
 import React, { useState } from 'react';
 import { Table, ScrollArea, Group, Avatar, Text } from '@mantine/core';
 import classes from './TableCardDetail.module.scss';
-import { ICastMember } from '@/models/interfaces/mediaDetail.interface';
+import { ICastMember } from '@/models/interfaces/media/mediaDetail.interface';
 
-const TableCardDetail: React.FC<Array<ICastMember>> = (dataTable) => {
+type DataTableType = {
+    data: Array<ICastMember>
+};
+const TableCardDetail: React.FC<DataTableType> = ({ data }) => {
     const [scrolled, setScrolled] = useState(false);
-    const { data } = dataTable;
     const rows = data.map((row) => (
         <Table.Tr key={row.id}>
             <Table.Td>

@@ -1,27 +1,39 @@
 import { AppShell } from '@mantine/core';
 
 import React, { PropsWithChildren, useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { ApolloQueryResult } from '@apollo/client';
 import { Header } from '@/components/molecules/Header/Header';
 import { createApolloClient } from '@/apollo-client';
 import { FETCH_FAVORITES_MEDIA, FETCH_MEDIA } from '@/graphql/queries';
-import { setFavoritesMedia, setMedia } from '@/store/dataSlice';
+import { selectFavourites, setFavoritesMedia, setMedia } from '@/store/dataSlice';
 import SkeletonHeader from '@/components/atoms/SkeletonHeader';
 import { PageNoData } from '@/components/atoms/PageNoData/PageNoData';
+import { IMedia } from '@/models/interfaces/media/media.interface';
+import { IFavsUser } from '@/models/interfaces/media/favMedia.interface';
+
+type GetMediaType = {
+    media: Array<IMedia>;
+};
+
+type GetFavoritesType = {
+    getFavorites: Array<IFavsUser>;
+};
 
 export const MainLayout: React.FC<PropsWithChildren> = ({ children }) => {
-    const client = createApolloClient();
+    const client = createApolloClient;
     const dispatch = useDispatch();
+    const favs: Array<IMedia> = useSelector(selectFavourites);
+
     const [loadingFavs, setLoadingFavs] = useState<boolean>(false);
 
     // eslint-disable-next-line consistent-return
     const fetchMedia = async () => {
         try {
-            const { data: media } = await client.query({
+            const { data: media }: ApolloQueryResult<GetMediaType> = await client.query({
                 query: FETCH_MEDIA,
             });
-
-            const { data: favorites } = await client.query({
+            const { data: favorites }: ApolloQueryResult<GetFavoritesType> = await client.query({
                 query: FETCH_FAVORITES_MEDIA(localStorage.getItem('uid')),
             });
             setLoadingFavs(favorites.getFavorites.length >= 0);

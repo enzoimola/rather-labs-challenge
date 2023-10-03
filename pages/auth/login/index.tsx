@@ -14,26 +14,26 @@ import classes from './Login.module.scss';
 import { useAuth } from '@/context/auth';
 
 const Login: React.FC = () => {
-    const emailRef = useRef<HTMLInputElement>();
-    const passwordRef = useRef<HTMLInputElement>();
+    const emailRef = useRef<HTMLInputElement | null>(null);
+    const passwordRef = useRef<HTMLInputElement | null>(null);
     const [error, setError] = useState('');
     const [loadingBtn, setLoadingBtn] = useState(false);
     const router = useRouter();
-    const { login, userLogged } = useAuth();
+    const { login } = useAuth();
 
-    const checkValidEmail = (emailInput) => /\S+@\S+\.\S+/.test(emailInput);
+    const checkValidEmail = (emailInput: string) => /\S+@\S+\.\S+/.test(emailInput);
 
-    const handleLoginSubmit = async (e) => {
+    const handleLoginSubmit = async (e: React.SyntheticEvent) => {
         e.preventDefault();
         const { current: email } = emailRef;
         const { current: password } = passwordRef;
         setLoadingBtn(false);
 
-        const checkedEmail = checkValidEmail(email?.value);
-        const checkedPassword = password?.value.length > 5;
+        const checkedEmail: boolean = checkValidEmail(email!.value);
+        const checkedPassword: boolean = password!.value?.length > 5;
 
         setError(!checkedEmail ? 'Email is invalid, please type an valid email' :
-            !checkedPassword ? 'Password should include at least 6 characters' : null);
+            !checkedPassword ? 'Password should include at least 6 characters' : '');
 
         if (checkedEmail && checkedPassword && email && password) {
             setLoadingBtn(true);
@@ -45,11 +45,10 @@ const Login: React.FC = () => {
                     title: 'Error',
                     message: String(err),
                 });
-                password.value = null;
+                password.value = '';
             } finally {
                 setLoadingBtn(false);
             }
-            // router.push({ pathname: '/' });
         }
     };
 

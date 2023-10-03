@@ -10,13 +10,12 @@ import {
 import React, { useRef, useState } from 'react';
 import { useRouter } from 'next/router';
 import { notifications } from '@mantine/notifications';
-import { useMutation } from '@apollo/client';
 import classes from '../login/Login.module.scss';
 import { useAuth } from '@/context/auth';
 
 const Register: React.FC = () => {
-    const emailRef = useRef<HTMLInputElement>();
-        const passwordRef = useRef<HTMLInputElement>();
+    const emailRef = useRef<HTMLInputElement | null>(null);
+        const passwordRef = useRef<HTMLInputElement | null>(null);
         const [error, setError] = useState('');
         const [userRegistered, setUserRegistered] = useState<boolean>(false);
         const [loadingRegisterBtn, setRegisterLoadingBtn] = useState<boolean>(false);
@@ -24,7 +23,8 @@ const Register: React.FC = () => {
         const { signup } = useAuth();
         const checkValidEmail = (emailInput: string) => /\S+@\S+\.\S+/.test(emailInput);
         const [loadingBackBtn, setBackLoadingBtn] = useState(false);
-        const onBackHandler = () => {
+        const onBackHandler = (e: React.MouseEvent<HTMLElement>) => {
+            e.preventDefault();
             setBackLoadingBtn(true);
             router.push('/auth/login');
         };
@@ -34,7 +34,7 @@ const Register: React.FC = () => {
             const { current: password } = passwordRef;
             if (email?.value && password?.value) {
                 try {
-                    const input = await signup(email.value, password.value);
+                    await signup(email.value, password.value);
                     setUserRegistered(true);
                 } catch (e) {
                     notifications.show({
@@ -47,15 +47,17 @@ const Register: React.FC = () => {
             }
         };
 
-        const handleRegisterSubmit = async (e) => {
+        const handleRegisterSubmit = async (e: React.SyntheticEvent) => {
             e.preventDefault();
+            const { current: email } = emailRef;
+            const { current: password } = passwordRef;
             setRegisterLoadingBtn(false);
 
-            const checkedEmail = checkValidEmail(emailRef.current?.value);
-            const checkedPassword = passwordRef.current?.value.length > 5;
+            const checkedEmail: boolean = checkValidEmail(email!.value);
+            const checkedPassword: boolean = password!.value.length > 5;
 
             setError(!checkedEmail ? 'Email is invalid, please type an valid email' :
-                !checkedPassword ? 'Password should include at least 6 characters' : null);
+                !checkedPassword ? 'Password should include at least 6 characters' : '');
 
             if (checkedEmail && checkedPassword) {
                 setRegisterLoadingBtn(true);

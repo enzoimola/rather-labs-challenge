@@ -12,7 +12,7 @@ import '@mantine/notifications/styles.css';
 
 const App = ({ Component, pageProps }: AppProps) => (
       <ErrorBoundary>
-          <MantineProvider theme="light">
+          <MantineProvider>
               <Notifications position="top-right" />
 
               <Head>

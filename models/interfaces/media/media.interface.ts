@@ -4,5 +4,5 @@ export interface IMedia {
     posterPath: string;
     releaseDate: string;
     voteAverage: number;
-    isMovie: boolean
+    isMovie?: boolean
 }
