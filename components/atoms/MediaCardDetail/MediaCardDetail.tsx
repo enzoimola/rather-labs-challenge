@@ -1,7 +1,7 @@
 import { Card, Image, Text, Group, Badge, Button, Anchor } from '@mantine/core';
 import React, { useEffect, useState } from 'react';
 import moment from 'moment/moment';
-import { IconStar } from '@tabler/icons-react';
+import { IconHeart, IconHeartFilled, IconStar } from '@tabler/icons-react';
 import { useDispatch, useSelector } from 'react-redux';
 import { notifications } from '@mantine/notifications';
 import { useMutation } from '@apollo/client';
@@ -10,7 +10,8 @@ import TableCardDetail from '@/components/atoms/TableCardDetail/TableCardDetail'
 import { onFavouredMedia, selectFavourites } from '@/store/dataSlice';
 import { useAuth } from '@/context/auth';
 import { IMediaDetail } from '@/models/interfaces/media/mediaDetail.interface';
-import { ADD_FAVORITE_MEDIA_MUTATION } from '@/graphql/queries';
+import { ADD_FAVORITE_MEDIA_MUTATION, FETCH_FAVORITES_MEDIA } from '@/graphql/queries';
+import { createApolloClient } from '@/apollo-client';
 
 export const MediaCardDetail : React.FC<IMediaDetail> =
     ({ id, name, releaseDate, posterPath, overview,
@@ -25,6 +26,7 @@ export const MediaCardDetail : React.FC<IMediaDetail> =
     const favourites = useSelector(selectFavourites);
     const { userLogged } = useAuth();
     const [addFavMedia] = useMutation(ADD_FAVORITE_MEDIA_MUTATION);
+    const client = createApolloClient;
 
     useEffect(() => {
         if (favourites.length === 0) {
@@ -52,6 +54,15 @@ export const MediaCardDetail : React.FC<IMediaDetail> =
             const newFav = { id, name, releaseDate, posterPath, voteAverage };
             dispatch(onFavouredMedia(newFav));
             setIsMarkAsFav(!setFav);
+
+            await client.refetchQueries({
+                include: [FETCH_FAVORITES_MEDIA(userLogged!.uid && userLogged!.uid)],
+            });
+
+            notifications.show({
+                title: !setFav ? 'Congrats!' : 'Notification',
+                message: !setFav ? `${name} added to favorites` : `${name} removed from favorites`,
+            });
         } catch (e) {
             notifications.show({
                 title: 'Error',
@@ -101,8 +112,8 @@ export const MediaCardDetail : React.FC<IMediaDetail> =
                 </Text>
                 <Group />
                 <Button color="red" variant="outline" radius="md" onClick={onFavoriteHandler} loading={loadingFavBtn}>
-                    {!setFav && <Text>Add to favorite</Text>}
-                    {setFav && <Text>Remove from favorite</Text>}
+                    {!setFav && <IconHeart className={classes.like} stroke={1.5} />}
+                    {setFav && <IconHeartFilled className={classes.like} stroke={1.5} />}
                 </Button>
                 {homepage && <Anchor href={homepage} target="_blank" mt="10">
                                 {homepage}

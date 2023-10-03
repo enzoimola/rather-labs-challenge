@@ -10,7 +10,8 @@ import classes from './MediaCard.module.scss';
 import { IMedia } from '@/models/interfaces/media/media.interface';
 import { onFavouredMedia, selectFavourites } from '@/store/dataSlice';
 import { useAuth } from '@/context/auth';
-import { ADD_FAVORITE_MEDIA_MUTATION } from '@/graphql/queries';
+import { ADD_FAVORITE_MEDIA_MUTATION, FETCH_FAVORITES_MEDIA } from '@/graphql/queries';
+import { createApolloClient } from '@/apollo-client';
 
 export const MediaCard: React.FC<IMedia> =
     ({ id, name, releaseDate, posterPath,
@@ -23,6 +24,7 @@ export const MediaCard: React.FC<IMedia> =
     const [loadingBtn, setLoadingBtn] = useState<boolean>(false);
     const [setFav, setIsMarkAsFav] = useState<boolean>(false);
     const [addFavMedia] = useMutation(ADD_FAVORITE_MEDIA_MUTATION);
+    const client = createApolloClient;
     const imageURL = posterPath ? `${process.env.NEXT_PUBLIC_TMDB_IMAGE_URL}${posterPath}` : `${process.env.NEXT_PUBLIC_IMAGE_NOT_FOUND}`;
 
     useEffect(() => {
@@ -60,6 +62,15 @@ export const MediaCard: React.FC<IMedia> =
             dispatch(onFavouredMedia(newFav));
 
             setIsMarkAsFav(!setFav);
+
+            await client.refetchQueries({
+                include: [FETCH_FAVORITES_MEDIA(userLogged!.uid && userLogged!.uid)],
+            });
+
+            notifications.show({
+                title: !setFav ? 'Congrats!' : 'Notification',
+                message: !setFav ? `${name} added to favorites` : `${name} removed from favorites`,
+            });
         } catch (e) {
             notifications.show({
                 title: 'Error',
