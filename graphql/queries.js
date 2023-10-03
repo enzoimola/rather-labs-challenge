@@ -43,7 +43,7 @@ export const FETCH_FAVORITES_MEDIA = (uid) => gql`
     }
 `;
 
-export const CREATE_USER_MUTATION = `
+export const CREATE_USER_MUTATION = gql`
    mutation CreateUser($input: CreateUserInput!) {
     createUser(input: $input) {
       email
@@ -51,7 +51,7 @@ export const CREATE_USER_MUTATION = `
   }
 `;
 
-export const ADD_FAVORITE_MEDIA_MUTATION = `
+export const ADD_FAVORITE_MEDIA_MUTATION = gql`
     mutation AddFavMedia($media: FavMedia!) { 
         addFavMedia(media: $media) { 
             success 
@@ -59,10 +59,3 @@ export const ADD_FAVORITE_MEDIA_MUTATION = `
     }
 `;
 
-export const ADD_FAVORITE_MEDIA_MUTATION_GQL = gql`
-    mutation AddFavMedia($media: FavMedia!) { 
-        addFavMedia(media: $media) { 
-            success 
-        } 
-    }
-`;

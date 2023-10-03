@@ -4,13 +4,13 @@ import moment from 'moment/moment';
 import { IconStar } from '@tabler/icons-react';
 import { useDispatch, useSelector } from 'react-redux';
 import { notifications } from '@mantine/notifications';
+import { useMutation } from '@apollo/client';
 import classes from './MediaCardDetail.module.scss';
 import TableCardDetail from '@/components/atoms/TableCardDetail/TableCardDetail';
-import { IFavMedia } from '@/models/interfaces/media/favMedia.interface';
-import { saveFavorite } from '@/services/media/media.service';
 import { onFavouredMedia, selectFavourites } from '@/store/dataSlice';
 import { useAuth } from '@/context/auth';
 import { IMediaDetail } from '@/models/interfaces/media/mediaDetail.interface';
+import { ADD_FAVORITE_MEDIA_MUTATION } from '@/graphql/queries';
 
 export const MediaCardDetail : React.FC<IMediaDetail> =
     ({ id, name, releaseDate, posterPath, overview,
@@ -24,6 +24,7 @@ export const MediaCardDetail : React.FC<IMediaDetail> =
     const dispatch = useDispatch();
     const favourites = useSelector(selectFavourites);
     const { userLogged } = useAuth();
+    const [addFavMedia] = useMutation(ADD_FAVORITE_MEDIA_MUTATION);
 
     useEffect(() => {
         if (favourites.length === 0) {
@@ -38,16 +39,18 @@ export const MediaCardDetail : React.FC<IMediaDetail> =
     }, [favourites]);
 
     const onFavoriteHandler = async () => {
-        const body: IFavMedia = {
-            id,
-            uid: userLogged!.uid,
-            isFav: setFav,
-        };
         try {
-            await saveFavorite(body);
+            await addFavMedia({
+                variables: {
+                    media: {
+                        id,
+                        uid: userLogged!.uid,
+                        isFav: setFav,
+                    },
+                },
+            });
             const newFav = { id, name, releaseDate, posterPath, voteAverage };
             dispatch(onFavouredMedia(newFav));
-            debugger;
             setIsMarkAsFav(!setFav);
         } catch (e) {
             notifications.show({

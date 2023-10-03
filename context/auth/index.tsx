@@ -15,11 +15,10 @@ import {
 import { useRouter } from 'next/router';
 import { auth } from '../../firebase.js';
 import NotAllowedAccess from '@/components/atoms/NotAllowedAccess';
-import { createUser } from '@/services/media/media.service';
 
 type AuthContextType = {
     isAuthenticated: boolean,
-    signup: (email: string, password: string) => void,
+    signup: (email: string, password: string) => Promise<string>,
     login: (email: string, password: string) => void,
     userLogged: User | null,
     logout: () => void,
@@ -27,7 +26,7 @@ type AuthContextType = {
 
 export const authContext = createContext<AuthContextType>({
     isAuthenticated: false,
-    signup: () => {},
+    signup: async () => '',
     login: () => {},
     userLogged: null,
     logout: () => {},
@@ -47,14 +46,14 @@ export const AuthProvider: React.FC<PropsWithChildren> = ({ children }) => {
             setUserLogged(currentUser);
         });
     }, []);
-    const signup = async (email: string, password: string): Promise<void> => {
+    const signup = async (email: string, password: string): Promise<string> => {
         try {
             const userResp: UserCredential = await createUserWithEmailAndPassword(
                 auth,
                 email,
                 password
             );
-            await createUser({ email, password, uid: userResp.user.uid });
+            return userResp.user.uid;
         } catch (e: unknown) {
             throw new Error('This email is already taken');
         }
@@ -90,7 +89,7 @@ export const AuthProvider: React.FC<PropsWithChildren> = ({ children }) => {
 export const ProtectRoute: React.FC<{ children: ReactElement }> = ({ children }) => {
     const { isAuthenticated } = useAuth();
     const router = useRouter();
-    if ((!isAuthenticated && router.pathname !== '/auth/login')) {
+    if ((!isAuthenticated && router.pathname !== '/auth/login' && router.pathname !== '/auth/register')) {
         return <NotAllowedAccess />;
     }
     return <>{children}</>;

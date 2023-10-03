@@ -4,12 +4,13 @@ import React, { useEffect, useState } from 'react';
 import moment from 'moment';
 import { useRouter } from 'next/router';
 import { useDispatch, useSelector } from 'react-redux';
+import { useMutation } from '@apollo/client';
+import { notifications } from '@mantine/notifications';
 import classes from './MediaCard.module.scss';
 import { IMedia } from '@/models/interfaces/media/media.interface';
-import { saveFavorite } from '@/services/media/media.service';
-import { IFavMedia } from '@/models/interfaces/media/favMedia.interface';
 import { onFavouredMedia, selectFavourites } from '@/store/dataSlice';
 import { useAuth } from '@/context/auth';
+import { ADD_FAVORITE_MEDIA_MUTATION } from '@/graphql/queries';
 
 export const MediaCard: React.FC<IMedia> =
     ({ id, name, releaseDate, posterPath,
@@ -21,6 +22,7 @@ export const MediaCard: React.FC<IMedia> =
     const favourites = useSelector(selectFavourites);
     const [loadingBtn, setLoadingBtn] = useState<boolean>(false);
     const [setFav, setIsMarkAsFav] = useState<boolean>(false);
+    const [addFavMedia] = useMutation(ADD_FAVORITE_MEDIA_MUTATION);
     const imageURL = posterPath ? `${process.env.NEXT_PUBLIC_TMDB_IMAGE_URL}${posterPath}` : `${process.env.NEXT_PUBLIC_IMAGE_NOT_FOUND}`;
 
     useEffect(() => {
@@ -44,17 +46,26 @@ export const MediaCard: React.FC<IMedia> =
     const voteAvg = !voteAverage ? 0 : voteAverage.toFixed(1);
 
     const onFavoriteHandler = async () => {
-        const body: IFavMedia = {
-            id,
-            uid: userLogged!.uid,
-            isFav: setFav,
-        };
-        await saveFavorite(body);
+        try {
+            await addFavMedia({
+                variables: {
+                    media: {
+                        id,
+                        uid: userLogged!.uid,
+                        isFav: setFav,
+                    },
+                },
+            });
+            const newFav = { id, name, releaseDate, posterPath, voteAverage, isMovie };
+            dispatch(onFavouredMedia(newFav));
 
-        const newFav = { id, name, releaseDate, posterPath, voteAverage, isMovie };
-        dispatch(onFavouredMedia(newFav));
-
-        setIsMarkAsFav(!setFav);
+            setIsMarkAsFav(!setFav);
+        } catch (e) {
+            notifications.show({
+                title: 'Error',
+                message: 'Failed to add to favorites, please try again',
+            });
+        }
     };
 
     return (
