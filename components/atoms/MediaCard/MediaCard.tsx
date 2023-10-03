@@ -42,7 +42,7 @@ export const MediaCard: React.FC<IMedia> =
         router.push({ pathname: '/[isMovieParam]/[id]', query: { id, isMovieParam } });
     };
 
-    const checkMainPage = router.pathname === ('/');
+    const checkMainPage = router.pathname === ('/home');
 
     const icon = <IconStar style={{ width: 20, height: 20 }} />;
     const voteAvg = !voteAverage ? 0 : voteAverage.toFixed(1);

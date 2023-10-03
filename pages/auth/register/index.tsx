@@ -30,7 +30,7 @@ const Register: React.FC = () => {
         const onBackHandler = (e: React.MouseEvent<HTMLElement>) => {
             e.preventDefault();
             setBackLoadingBtn(true);
-            router.push('/auth/login');
+            router.push('/');
         };
 
         const registerUser = async () => {
@@ -101,7 +101,7 @@ const Register: React.FC = () => {
                   type="button"
                   c="dimmed"
                   size="xs"
-                  onClick={() => router.push('/auth/login')}
+                  onClick={() => router.push('/')}
                   mt={20}
                 >
                     Already have an account? Login

@@ -27,7 +27,7 @@ const MediaDetail: React.FC<DetailType> = ({ detailMedia }) => {
     const onBackHandler = (e: React.MouseEvent<HTMLElement>) => {
         e.preventDefault();
         setBackLoadingBtn(true);
-        router.push('/');
+        router.push('/home');
     };
 
     if (loadingPage) {

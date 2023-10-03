@@ -13,7 +13,7 @@ export const PageNoData: React.FC<PageNoData> = ({ title, text, returnBack }) =>
     const [loadingBtn, setLoadingBtn] = useState(false);
     const onBackHandler = () => {
         setLoadingBtn(true);
-        router.push('/');
+        router.push('/home');
     };
 
     return (
