@@ -39,6 +39,7 @@ const Login: React.FC = () => {
             setLoadingBtn(true);
             try {
                 await login(email.value, password.value);
+
                 router.push({ pathname: '/' }).then();
             } catch (err: unknown) {
                 notifications.show({

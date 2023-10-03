@@ -15,20 +15,19 @@ import {
 import { useRouter } from 'next/router';
 import { auth } from '../../firebase.js';
 import NotAllowedAccess from '@/components/atoms/NotAllowedAccess';
-import { createUser } from '@/services/media/media.service';
 
 type AuthContextType = {
-    isAuthenticated: boolean,
-    signup: (email: string, password: string) => void,
+    isLoggedIn: boolean;
+    signup: (email: string, password: string) => Promise<string>,
     login: (email: string, password: string) => void,
     userLogged: User | null,
     logout: () => void,
 };
 
 export const authContext = createContext<AuthContextType>({
-    isAuthenticated: false,
-    signup: () => {},
-    login: () => {},
+    isLoggedIn: true,
+    signup: async () => '',
+    login: async () => {},
     userLogged: null,
     logout: () => {},
 });
@@ -41,20 +40,28 @@ export const useAuth = () => {
 
 export const AuthProvider: React.FC<PropsWithChildren> = ({ children }) => {
     const [userLogged, setUserLogged] = useState<User | null>(null);
+    const [isLoggedIn, setIsLoggedIn] = useState<boolean>(true);
+
+    useEffect(() => {
+        if (typeof window === 'undefined') {
+            return;
+        }
+        setIsLoggedIn(Boolean(localStorage.getItem('uid')));
+    }, [setIsLoggedIn]);
 
     useEffect(() => {
         onAuthStateChanged(auth, currentUser => {
             setUserLogged(currentUser);
         });
     }, []);
-    const signup = async (email: string, password: string): Promise<void> => {
+    const signup = async (email: string, password: string): Promise<string> => {
         try {
             const userResp: UserCredential = await createUserWithEmailAndPassword(
                 auth,
                 email,
                 password
             );
-            await createUser({ email, password, uid: userResp.user.uid });
+            return userResp.user.uid;
         } catch (e: unknown) {
             throw new Error('This email is already taken');
         }
@@ -65,6 +72,7 @@ export const AuthProvider: React.FC<PropsWithChildren> = ({ children }) => {
             // eslint-disable-next-line max-len
             const { user }: UserCredential = await signInWithEmailAndPassword(auth, email, password);
             localStorage.setItem('uid', user.uid);
+            setIsLoggedIn(true);
         } catch (e: unknown) {
             console.log(e);
             throw new Error('Invalid credentials');
@@ -76,11 +84,9 @@ export const AuthProvider: React.FC<PropsWithChildren> = ({ children }) => {
         localStorage.removeItem('uid');
     };
 
-    const isAuthenticated: boolean = !!userLogged;
-
     return (
             <authContext.Provider
-              value={{ isAuthenticated, signup, login, userLogged, logout }}
+              value={{ isLoggedIn, signup, login, userLogged, logout }}
             >
                 {children}
             </authContext.Provider>
@@ -88,9 +94,10 @@ export const AuthProvider: React.FC<PropsWithChildren> = ({ children }) => {
 };
 
 export const ProtectRoute: React.FC<{ children: ReactElement }> = ({ children }) => {
-    const { isAuthenticated } = useAuth();
+    const { isLoggedIn } = useAuth();
     const router = useRouter();
-    if ((!isAuthenticated && router.pathname !== '/auth/login')) {
+
+    if ((!isLoggedIn && router.pathname !== '/auth/login' && router.pathname !== '/auth/register')) {
         return <NotAllowedAccess />;
     }
     return <>{children}</>;
