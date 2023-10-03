@@ -4,23 +4,24 @@ import React, { useEffect, useState } from 'react';
 import moment from 'moment';
 import { useRouter } from 'next/router';
 import { useDispatch, useSelector } from 'react-redux';
-import { UserCredential } from 'firebase/auth';
 import classes from './MediaCard.module.scss';
-import { IMedia } from '@/models/interfaces/media.interface';
+import { IMedia } from '@/models/interfaces/media/media.interface';
 import { saveFavorite } from '@/services/media/media.service';
-import { IFavMedia } from '@/models/interfaces/favMedia.interface';
+import { IFavMedia } from '@/models/interfaces/media/favMedia.interface';
 import { onFavouredMedia, selectFavourites } from '@/store/dataSlice';
 import { useAuth } from '@/context/auth';
 
-export const MediaCard: React.FC<IMedia> = (
-    { id, name, releaseDate, posterPath, voteAverage, isMovie }) => {
+export const MediaCard: React.FC<IMedia> =
+    ({ id, name, releaseDate, posterPath,
+        voteAverage, isMovie,
+    }) => {
+    const router = useRouter();
+    const dispatch = useDispatch();
+    const { userLogged } = useAuth();
+    const favourites = useSelector(selectFavourites);
     const [loadingBtn, setLoadingBtn] = useState<boolean>(false);
     const [setFav, setIsMarkAsFav] = useState<boolean>(false);
-    const router = useRouter();
     const imageURL = posterPath ? `${process.env.NEXT_PUBLIC_TMDB_IMAGE_URL}${posterPath}` : `${process.env.NEXT_PUBLIC_IMAGE_NOT_FOUND}`;
-    const favourites = useSelector(selectFavourites);
-    const dispatch = useDispatch();
-    const { userLogged } : UserCredential = useAuth();
 
     useEffect(() => {
         const isFav = favourites.some(md => md.id === id);
@@ -29,7 +30,7 @@ export const MediaCard: React.FC<IMedia> = (
         }
     }, []);
 
-    const onShowDetailsHandler = (e) => {
+    const onShowDetailsHandler = (e: React.MouseEvent<HTMLElement>) => {
         e.preventDefault();
         setLoadingBtn(true);
         const isMovieParam = isMovie ? 'media' : 'tv-show';
@@ -45,12 +46,12 @@ export const MediaCard: React.FC<IMedia> = (
     const onFavoriteHandler = async () => {
         const body: IFavMedia = {
             id,
-            uid: userLogged.uid,
+            uid: userLogged!.uid,
             isFav: setFav,
         };
         await saveFavorite(body);
 
-        const newFav = { id, name, releaseDate, posterPath, voteAverage };
+        const newFav = { id, name, releaseDate, posterPath, voteAverage, isMovie };
         dispatch(onFavouredMedia(newFav));
 
         setIsMarkAsFav(!setFav);
@@ -65,7 +66,7 @@ export const MediaCard: React.FC<IMedia> = (
 
             <Card.Section className={classes.section} mt="md">
                 <Group justify="center" className={classes.sectionGroup}>
-                    <Text fz="lg" justify="center" fw={500} className={classes.title}>
+                    <Text fz="lg" fw={500} className={classes.title}>
                         {name}
                     </Text>
                 </Group>

@@ -1,17 +1,37 @@
-import { createContext, useContext, useEffect, useState } from 'react';
+import React, {
+    createContext,
+    PropsWithChildren,
+    ReactElement,
+    useContext,
+    useEffect,
+    useState,
+} from 'react';
 import {
     createUserWithEmailAndPassword,
     signInWithEmailAndPassword,
     onAuthStateChanged,
-    signOut, UserCredential,
+    signOut, UserCredential, User,
 } from 'firebase/auth';
 import { useRouter } from 'next/router';
 import { auth } from '../../firebase.js';
 import NotAllowedAccess from '@/components/atoms/NotAllowedAccess';
-import { IUser } from '@/models/interfaces/user/user.interface';
 import { createUser } from '@/services/media/media.service';
 
-export const authContext = createContext();
+type AuthContextType = {
+    isAuthenticated: boolean,
+    signup: (email: string, password: string) => void,
+    login: (email: string, password: string) => void,
+    userLogged: User | null,
+    logout: () => void,
+};
+
+export const authContext = createContext<AuthContextType>({
+    isAuthenticated: false,
+    signup: () => {},
+    login: () => {},
+    userLogged: null,
+    logout: () => {},
+});
 
 export const useAuth = () => {
     const context = useContext(authContext);
@@ -19,15 +39,15 @@ export const useAuth = () => {
     return context;
 };
 
-export const AuthProvider = ({ children }) => {
-    const [userLogged, setUserLogged] = useState(null);
+export const AuthProvider: React.FC<PropsWithChildren> = ({ children }) => {
+    const [userLogged, setUserLogged] = useState<User | null>(null);
 
     useEffect(() => {
         onAuthStateChanged(auth, currentUser => {
             setUserLogged(currentUser);
         });
     }, []);
-    const signup = async (email: string, password: string): Promise<IUser> => {
+    const signup = async (email: string, password: string): Promise<void> => {
         try {
             const userResp: UserCredential = await createUserWithEmailAndPassword(
                 auth,
@@ -35,8 +55,6 @@ export const AuthProvider = ({ children }) => {
                 password
             );
             await createUser({ email, password, uid: userResp.user.uid });
-
-            return { email, password, uid: userResp.user.uid };
         } catch (e: unknown) {
             throw new Error('This email is already taken');
         }
@@ -58,7 +76,7 @@ export const AuthProvider = ({ children }) => {
         localStorage.removeItem('uid');
     };
 
-    const isAuthenticated = (): boolean => localStorage.getItem('uid');
+    const isAuthenticated: boolean = !!userLogged;
 
     return (
             <authContext.Provider
@@ -69,11 +87,11 @@ export const AuthProvider = ({ children }) => {
     );
 };
 
-export const ProtectRoute = ({ children }) => {
+export const ProtectRoute: React.FC<{ children: ReactElement }> = ({ children }) => {
     const { isAuthenticated } = useAuth();
     const router = useRouter();
     if ((!isAuthenticated && router.pathname !== '/auth/login')) {
         return <NotAllowedAccess />;
     }
-    return children;
+    return <>{children}</>;
 };

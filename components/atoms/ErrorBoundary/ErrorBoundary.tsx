@@ -1,8 +1,15 @@
-import React from 'react';
+import React, { ErrorInfo, ReactNode } from 'react';
 import { Group } from '@mantine/core';
 
-export class ErrorBoundary extends React.Component<any, any> {
-    constructor(props) {
+interface Props {
+    children: ReactNode;
+}
+
+interface State {
+    hasError: boolean;
+}
+export class ErrorBoundary extends React.Component<Props, State> {
+    constructor(props: Props) {
         super(props);
 
         // Define a state variable to track whether is an error or not
@@ -16,7 +23,7 @@ export class ErrorBoundary extends React.Component<any, any> {
         return { hasError: true };
     }
 
-    componentDidCatch(error, errorInfo) {
+    componentDidCatch(error:Error, errorInfo:ErrorInfo) {
         // You can use your own error logging service here
         console.log({ error, errorInfo });
     }

@@ -2,13 +2,14 @@ import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { MediaSearch } from '@/components/atoms/MediaSearch/MediaSearch';
 import { MediaGrid } from '@/components/molecules/MediaGrid/MediaGrid';
-import { IMedia } from '@/models/interfaces/media.interface';
+import { IMedia } from '@/models/interfaces/media/media.interface';
 import SkeletonMedia from '@/components/atoms/SkeletonMedia';
 import { PageNoData } from '@/components/atoms/PageNoData/PageNoData';
+import { selectFavourites } from '@/store/dataSlice';
 
 export const FavoriteWrapper: React.FC = () => {
     const [media, setMedia] = useState<Array<IMedia>>([]);
-    const mediaFetched = useSelector((data) => data);
+    const favFetched = useSelector(selectFavourites);
     const [loadingGrid, setLoadingGrid] = useState<boolean>(true);
     const [noDataFound, setNoDataFound] = useState<boolean>(false);
 
@@ -17,12 +18,12 @@ export const FavoriteWrapper: React.FC = () => {
 
     const getMedia = (backspacePressed: boolean, search?: string) => {
         if (!search) {
-            setMedia(mediaFetched.data.favorites);
+            setMedia(favFetched);
             setNoDataFound(false);
             return;
         }
         const result = search && backspacePressed ?
-            filterMedia(mediaFetched.data.favorites, search) : filterMedia(media, search);
+            filterMedia(favFetched, search) : filterMedia(media, search);
         setNoDataFound(result.length === 0);
         setMedia(result);
     };
@@ -32,9 +33,9 @@ export const FavoriteWrapper: React.FC = () => {
     };
 
     useEffect(() => {
-        setMedia(mediaFetched.data.favorites);
+        setMedia(favFetched);
         setLoadingGrid(false);
-    }, [mediaFetched]);
+    }, [favFetched]);
 
     return (
         <>

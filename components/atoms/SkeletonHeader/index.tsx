@@ -2,7 +2,7 @@ import { Container, Group, Skeleton } from '@mantine/core';
 import React from 'react';
 
 const SkeletonHeader = () => (
-    <Container display="flex" justify="space-between" my={10} mx={20}>
+    <Container display="flex" my={10} mx={20}>
         <Group>
             <Skeleton circle height={40} radius="xl" />
             <Skeleton circle height={40} radius="xl" />

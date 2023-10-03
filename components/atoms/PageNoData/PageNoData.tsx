@@ -23,9 +23,9 @@ export const PageNoData: React.FC<PageNoData> = ({ title, text, returnBack }) =>
             <Text c="dimmed" size="lg" ta="center" className={classes.description}>
                 {text}
             </Text>
-            {returnBack && <Group justify="center" my={10} flex>
+            {returnBack && <Group justify="center" my={10}>
                 <Button radius="md" onClick={onBackHandler} loading={loadingBtn}>
-                    Go to home
+                    Go home
                 </Button>
                            </Group>}
         </Container>);
