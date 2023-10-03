@@ -8,7 +8,7 @@ const NotFoundTitle: React.FC = () => {
     const [loading, setLoading] = useState<boolean>(false);
     const onGoLoginHandler = () => {
         setLoading(true);
-        router.replace('/home').then();
+        router.replace('/').then();
     };
     return (
         <Container className={classes.root}>
