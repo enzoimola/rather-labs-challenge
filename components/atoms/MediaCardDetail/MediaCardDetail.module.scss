@@ -37,6 +37,13 @@
   display: flex;
 }
 
+.like {
+  color: var(--mantine-color-red-6);
+  width: 20px;
+  height: 20px;
+}
+
+
 
 @media screen and (max-device-width: 500px) {
   .sectionCard .imageCard {
