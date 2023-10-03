@@ -96,8 +96,7 @@ export const AuthProvider: React.FC<PropsWithChildren> = ({ children }) => {
 export const ProtectRoute: React.FC<{ children: ReactElement }> = ({ children }) => {
     const { isLoggedIn } = useAuth();
     const router = useRouter();
-
-    if ((!isLoggedIn && router.pathname !== '/auth/login' && router.pathname !== '/auth/register')) {
+    if ((!isLoggedIn && router.pathname !== '/' && router.pathname !== '/auth/register')) {
         return <NotAllowedAccess />;
     }
     return <>{children}</>;

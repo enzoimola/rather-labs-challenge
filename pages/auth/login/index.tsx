@@ -40,7 +40,7 @@ const Login: React.FC = () => {
             try {
                 await login(email.value, password.value);
 
-                router.push({ pathname: '/' }).then();
+                router.push({ pathname: '/home' }).then();
             } catch (err: unknown) {
                 notifications.show({
                     title: 'Error',

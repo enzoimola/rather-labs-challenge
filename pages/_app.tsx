@@ -16,7 +16,7 @@ const App = ({ Component, pageProps }: AppProps) => (
               <Notifications position="top-right" />
 
               <Head>
-                  <title>Challenge</title>
+                  <title>RLabs Media</title>
                   <meta
                     name="viewport"
                     content="minimum-scale=1, initial-scale=1, width=device-width, user-scalable=no"
