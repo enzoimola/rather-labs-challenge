@@ -10,8 +10,10 @@ import {
 import React, { useRef, useState } from 'react';
 import { useRouter } from 'next/router';
 import { notifications } from '@mantine/notifications';
+import { useMutation } from '@apollo/client';
 import classes from '../login/Login.module.scss';
 import { useAuth } from '@/context/auth';
+import { CREATE_USER_MUTATION } from '@/graphql/queries';
 
 const Register: React.FC = () => {
     const emailRef = useRef<HTMLInputElement | null>(null);
@@ -23,6 +25,8 @@ const Register: React.FC = () => {
         const { signup } = useAuth();
         const checkValidEmail = (emailInput: string) => /\S+@\S+\.\S+/.test(emailInput);
         const [loadingBackBtn, setBackLoadingBtn] = useState(false);
+        const [createUser] = useMutation(CREATE_USER_MUTATION);
+
         const onBackHandler = (e: React.MouseEvent<HTMLElement>) => {
             e.preventDefault();
             setBackLoadingBtn(true);
@@ -34,8 +38,17 @@ const Register: React.FC = () => {
             const { current: password } = passwordRef;
             if (email?.value && password?.value) {
                 try {
-                    await signup(email.value, password.value);
+                    const uid = await signup(email.value, password.value);
                     setUserRegistered(true);
+                    await createUser({
+                        variables: {
+                            input: {
+                                email: email.value,
+                                password: password.value,
+                                uid,
+                            },
+                        },
+                    });
                 } catch (e) {
                     notifications.show({
                         title: 'Error',

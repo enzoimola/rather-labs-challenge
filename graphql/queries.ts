@@ -12,7 +12,7 @@ export const FETCH_MEDIA = gql`
   }  }
 `;
 
-export const FETCH_DETAIL_MEDIA = (idMedia, isMovie) => gql`
+export const FETCH_DETAIL_MEDIA = (idMedia: string, isMovie: boolean) => gql`
     query {
       detailMedia (id:${idMedia},isMovie: ${isMovie} ) {
         id
@@ -35,7 +35,7 @@ export const FETCH_DETAIL_MEDIA = (idMedia, isMovie) => gql`
     }
 `;
 
-export const FETCH_FAVORITES_MEDIA = (uid) => gql`
+export const FETCH_FAVORITES_MEDIA = (uid: string) => gql`
     query {
       getFavorites(uid:"${uid}")  {
         id
@@ -43,7 +43,7 @@ export const FETCH_FAVORITES_MEDIA = (uid) => gql`
     }
 `;
 
-export const CREATE_USER_MUTATION = `
+export const CREATE_USER_MUTATION = gql`
    mutation CreateUser($input: CreateUserInput!) {
     createUser(input: $input) {
       email
@@ -51,15 +51,7 @@ export const CREATE_USER_MUTATION = `
   }
 `;
 
-export const ADD_FAVORITE_MEDIA_MUTATION = `
-    mutation AddFavMedia($media: FavMedia!) { 
-        addFavMedia(media: $media) { 
-            success 
-        } 
-    }
-`;
-
-export const ADD_FAVORITE_MEDIA_MUTATION_GQL = gql`
+export const ADD_FAVORITE_MEDIA_MUTATION = gql`
     mutation AddFavMedia($media: FavMedia!) { 
         addFavMedia(media: $media) { 
             success 
