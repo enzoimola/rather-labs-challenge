@@ -45,7 +45,7 @@ export const Header = () => {
                 <Group justify="space-between" h="100%">
 
                     <Group h="100%" gap={0} visibleFrom="sm">
-                       <Link href={{ pathname: '/' }} className={classes.link}>Home</Link>
+                       <Link href={{ pathname: '/home' }} className={classes.link}>Home</Link>
                         {favs.length > 0 && <Link href={{ pathname: '/favorites' }} className={classes.link}>
                             <Indicator color="red" size={15} label={favs.length}>
                                 Favourites
