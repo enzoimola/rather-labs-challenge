@@ -13,10 +13,13 @@ export const MediaGrid: React.FC<MediaGridType> = ({ media }) => {
     const spanBase = router.pathname === ('/favorites') ?
                         media.length === 1 ? 12 : media.length === 2 ? 6 : 4 : 4;
 
+    const spanXs = router.pathname === ('/favorites') ?
+        media.length === 1 ? 12 : 6 : 6;
+
     return (
         <Grid>
             {media.map((m: IMedia) => (
-                <Grid.Col key={m.id} span={{ xs: 6, base: 12, lg: spanBase }}>
+                <Grid.Col key={m.id} span={{ xs: spanXs, base: 12, lg: spanBase }}>
                     <MediaCard
                       id={m.id}
                       name={m.name}
